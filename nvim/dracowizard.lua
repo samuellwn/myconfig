@@ -105,8 +105,13 @@ local palette = Palette.derive(bg, {
 	warning     = calculate_color({  39, 0.90, 1.00}),
 	hint        = calculate_color({ 207, 1.00, 1.00}),
 	ok          = calculate_color({ 105, 0.80, 1.00}),
+	select      = calculate_color({   0, 0.00, 0.15}),
 
-	bg_contrast_low = calculate_color({0, 0.0, 0.06}),
+	-- hopefully, this is what you're supposed to do with these
+	bg_contrast_low       = calculate_color({0, 0.0, 0.06}),
+	bg_contrast_high      = calculate_color({5, 0.1, 0.20}),
+	text_contrast_bg_low  = calculate_color({0, 0.0, 0.94}),
+	text_contrast_bg_high = calculate_color({0, 0.0, 0.80}),
 
 	comment     = calculate_color({mono, 0.40, 0.75}),
 	exception   = calculate_color({   5, 0.90, 0.90}),
