@@ -40,87 +40,71 @@ g.ale_sign_column_always = 1
 g.ale_linters_ignore = { 'mcs', 'mcsc', 'csc' }
 g.OmniSharp_server_use_net6 = 1
 
-require('packer').startup(function(use)
-	-- Package manager
-	use 'wbthomason/packer.nvim'
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+	vim.fn.system({
+		"git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git",
+		"--branch=stable", lazypath,
+	})
+end
+vim.opt.rtp:prepend(lazypath)
 
+require('lazy').setup({
 	-- IDE features
-	use {
+	{
 		'L3MON4D3/LuaSnip',
-		tag = "v1.*",
-		run = "make install_jsregexp",
-	}
-	use {
+		version = "1.*",
+		build = "make install_jsregexp",
+	},
+	{
 		'hrsh7th/nvim-cmp',
-		disable = false,
-		requires = {
+		dependencies = {
 			'L3MON4D3/LuaSnip', 'neovim/nvim-lspconfig', 'hrsh7th/cmp-nvim-lsp',
 			'hrsh7th/cmp-buffer', 'saadparwaiz1/cmp_luasnip', 'rafamadriz/friendly-snippets',
 			'hrsh7th/cmp-path', 'hrsh7th/cmp-cmdline',
 		},
-	}
+	},
 
 	-- Language support
-	use 'sheerun/vim-polyglot'
---	use 'ionide/Ionide-vim'
---	use 'fatih/vim-go'
-	use 'sebdah/vim-delve'
+	'sebdah/vim-delve', 'sheerun/vim-polyglot',
 
 	-- Git
-	use 'tpope/vim-fugitive'
-	use 'rhysd/git-messenger.vim'
-	use 'junegunn/gv.vim'
-	use 'jreybert/vimagit'
-	use {'idanarye/vim-merginal', requires = {'tpope/vim-fugitive'}}
+	--'tpope/vim-fugitive',
+	'rhysd/git-messenger.vim',
+	'junegunn/gv.vim',
+	'jreybert/vimagit',
+	{'idanarye/vim-merginal', dependencies = {'tpope/vim-fugitive'}},
 
 	-- Status bar
-	use {
-		'nvim-lualine/lualine.nvim',
-		requires = {'kyazdani42/nvim-web-devicons'},
-	}
+	{ 'nvim-lualine/lualine.nvim', dependencies = {'kyazdani42/nvim-web-devicons'}},
 
 	-- Navigation
-	use { 
-		'vimwiki/vimwiki',
-		disable = true,
-	}
-	use {
-		'phaazon/hop.nvim',
-		branch = 'v2',
-	}
-	use {
-		'christoomey/vim-tmux-navigator',
-	}
-	use 'ds26gte/info.vim'
+	{ 'vimwiki/vimwiki', disable = true },
+	{ 'phaazon/hop.nvim', branch = 'v2' },
+	'christoomey/vim-tmux-navigator',
+	'ds26gte/info.vim',
 
 	-- Unknown
---	use 'andreshazard/vim-freemarker'
-	use 'psf/black'
-	use {
+--	'andreshazard/vim-freemarker',
+	'psf/black',
+	{
 		'nvim-telescope/telescope.nvim',
-		requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}},
-	}
---	use 'sidebar-nvim/sidebar.nvim'
-	use 'andreshazard/vim-logreview'
-	use 'tpope/vim-repeat'
-	use 'tpope/vim-surround'
-	use 'Valloric/ListToggle'
-	use 'posva/vim-vue'
-	use 'elzr/vim-json'
-	use 'ekalinin/Dockerfile.vim'
-	use 'liuchengxu/graphviz.vim'
---	use 'Raimondi/DelimitMate' -- auto-insert closing parens, etc.
-	use 'tmhedberg/SimpylFold'
---	use 'neovim/nvim-lspconfig'
---	use 'ap/vim-buftabline'
-	use 'mbbill/undotree'
-	use { 'junegunn/fzf', run = function() vim.fn['fzf#install()']() end }
-	use { 'junegunn/fzf.vim', after = 'fzf' }
+		dependencies = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}},
+	},
+--	'sidebar-nvim/sidebar.nvim',
+	'andreshazard/vim-logreview', 'tpope/vim-repeat', 'tpope/vim-surround',
+	'Valloric/ListToggle', 'posva/vim-vue', 'elzr/vim-json',
+	'ekalinin/Dockerfile.vim', 'liuchengxu/graphviz.vim',
+	'tmhedberg/SimpylFold', 'mbbill/undotree', 'Joorem/vim-haproxy',
+--	'Raimondi/DelimitMate', -- auto-insert closing parens, etc.
+--	'neovim/nvim-lspconfig', 'ap/vim-buftabline'
+	{ 'junegunn/fzf', build = function() vim.fn['fzf#install']() end },
+	{ 'junegunn/fzf.vim', dependencies = 'fzf' },
+	{ 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
 --	use { 'antoinemadec/coc-fzf', branch = 'release', after = { 'fzf', 'fzf.vim' } }
-	use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-	use 'Joorem/vim-haproxy'
 
-	use { 'Iron-E/nvim-highlite', branch = 'master-v4' }
+	-- Colors
+	{ 'Iron-E/nvim-highlite', branch = 'master-v4' },
 
 	-- my colorscheme
 --	use 'samuellwn/nvim-colors'
@@ -138,7 +122,7 @@ require('packer').startup(function(use)
 --	use 'fenetikm/falcon'
 --	use 'romgrk/doom-one.vim'
 --	use 'Luxed/ayu-vim'
-end) 
+})
 
 -- Setup for 'Iron-E/nvim-highlite'
 require('highlite').setup()
