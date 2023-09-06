@@ -279,7 +279,7 @@ local caps = require('cmp_nvim_lsp').default_capabilities()
 local lsp = require 'lspconfig'
 local servers = {
 	'gopls', 'fsautocomplete', 'pyright', 'ocamllsp', 'rust_analyzer',
-	'erlangls', 'phpactor', 'sourcekit',
+	'erlangls', 'phpactor', 'sourcekit', 'ols',
 }
 for _, s in ipairs(servers) do
 	lsp[s].setup {capabilities = caps}
