@@ -2,6 +2,7 @@
 
 install -d -m 755 ~/.config
 install -d -m 755 ~/.config/nvim
+install -d -m 755 ~/.config/nvim/colors
 install -d -m 755 ~/.config/nvim-qt
 
 install -m 644 nvim/init.lua ~/.config/nvim/init.lua
