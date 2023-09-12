@@ -140,6 +140,7 @@ groups.PMenuSel      = {bg = calculate_color({0, 0.0, 0.07})}
 groups["@exception"] = {fg = calculate_color({5, 0.9, 0.90})}
 
 groups["@operator"] = Groups.extend({italic = true, bold = false}, groups '@operator')
+groups.ExtraWhitespace = {bg = palette.error}
 
 Highlite.generate('dracowizard', groups, terminal_palette)
 

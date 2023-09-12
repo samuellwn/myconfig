@@ -105,6 +105,7 @@ require('lazy').setup({
 
 	-- Colors
 	{ 'Iron-E/nvim-highlite', branch = 'master-v4' },
+	'ntpeters/vim-better-whitespace',
 
 	-- my colorscheme
 --	use 'samuellwn/nvim-colors'
