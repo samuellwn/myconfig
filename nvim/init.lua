@@ -107,6 +107,11 @@ require('lazy').setup({
 	{ 'Iron-E/nvim-highlite', branch = 'master-v4' },
 	'ntpeters/vim-better-whitespace',
 
+	-- Normally, neovim GUIs take care of loading this plugin for us. lazy.nvim
+	-- breaks this somehow. Add the plugin manually. This doesn't break plain
+	-- neovim. (I checked).
+	'equalsraf/neovim-gui-shim',
+
 	-- my colorscheme
 --	use 'samuellwn/nvim-colors'
 --	use '~/Projects/nvim-colors'
