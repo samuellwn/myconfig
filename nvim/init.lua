@@ -437,10 +437,6 @@ end
 
 
 require('nvim-treesitter.configs').setup {
-	ensure_installed = {
-		'go', 'lua', 'bash', 'c', 'css', 'json', 'jsonc',
-		'python', 'vue', 'javascript', 'html', 'toml', 'yaml',
-	},
 	sync_install = false,
 	auto_install = true,
 	highlight = {
