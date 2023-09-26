@@ -1,3 +1,4 @@
+" @install:$HOME/.config/nvim/ginit.vim:644:unix:*
 GuiAdaptiveFont 1
 GuiAdaptiveColor 1
 GuiRenderLigatures 1

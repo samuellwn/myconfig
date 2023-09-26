@@ -1,3 +1,4 @@
+-- @install:$HOME/.config/nvim/init.lua:644:unix:*
 --[===[ ]===]
 local o, bo, wo, g = vim.o, vim.bo, vim.wo, vim.cmd, vim.g
 local b, api = vim.b, vim.api, vim.api.nvim_set_keymap
@@ -439,7 +440,6 @@ function au(group, event, pattern, cmd)
 		autocmd(event, {group = group, pattern = pattern, command = cmd})
 	end
 end
-
 
 require('nvim-treesitter.configs').setup {
 	sync_install = false,
