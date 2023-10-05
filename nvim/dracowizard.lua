@@ -97,6 +97,13 @@ constructors, but something is insisting it does.
 
 --TODO: manpage headers and vim help headers are hard to read
 
+local colors = {
+	red = 5,
+	yellow = 39,
+	blue = 207,
+	green = 105,
+}
+
 local mono = 220
 -- hsl, level 1 is fg, level 0 is bg
 local palette = Palette.derive(bg, {
@@ -138,10 +145,18 @@ local terminal_palette = {
 local groups = Highlite.groups('default', palette)
 groups.ColorColumn   = {bg = calculate_color({0, 0.0, 0.07})}
 groups.PMenuSel      = {bg = calculate_color({0, 0.0, 0.07})}
-groups["@exception"] = {fg = calculate_color({5, 0.9, 0.90})}
+groups["@exception"] = {fg = palette.exception}
 
 groups["@operator"] = Groups.extend({italic = true, bold = false}, groups '@operator')
 groups.ExtraWhitespace = {bg = palette.error}
+groups.ErrorMsg = {fg = palette.exception}
+groups.LazyH1 = {fg = palette.exception}
+
+groups.DiagnosticOk    = {fg = calculate_color({colors.green,  0.8, 0.7})}
+groups.DiagnosticHint  = {fg = calculate_color({colors.blue,   0.9, 1.0})}
+groups.DiagnosticInfo  = {fg = calculate_color({colors.blue,   0.9, 1.0})}
+groups.DiagnosticWarn  = {fg = calculate_color({colors.yellow, 0.9, 1.0})}
+groups.DiagnosticError = {fg = calculate_color({colors.red,    0.9, 0.9})}
 
 Highlite.generate('dracowizard', groups, terminal_palette)
 
