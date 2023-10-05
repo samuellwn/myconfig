@@ -68,6 +68,7 @@ require('lazy').setup({
 
 	-- Language support
 	'sebdah/vim-delve', 'sheerun/vim-polyglot',
+	{ 'phpactor/phpactor', build = 'composer  install' },
 
 	-- Git
 	--'tpope/vim-fugitive',
