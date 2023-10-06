@@ -150,7 +150,8 @@ groups["@exception"] = {fg = palette.exception}
 groups["@operator"] = Groups.extend({italic = true, bold = false}, groups '@operator')
 groups.ExtraWhitespace = {bg = palette.error}
 groups.ErrorMsg = {fg = palette.exception}
-groups.LazyH1 = {fg = palette.exception}
+
+groups["@text.title.1"] = {fg = palette.exception}
 
 groups.DiagnosticOk    = {fg = calculate_color({colors.green,  0.8, 0.7})}
 groups.DiagnosticHint  = {fg = calculate_color({colors.blue,   0.9, 1.0})}
