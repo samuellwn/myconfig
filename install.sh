@@ -5,6 +5,9 @@ case $(uname -o) in
 	Darwin) OS=darwin; OS2=unix;;
 esac
 
+file=$(mktemp /tmp/myconfig.XXXXXXX)
+trap "rm $file" EXIT
+
 find . -path ./.git -prune -o -type f \! -name install.sh -print | while read i; do
 	grep '@install[,:]' "$i" | sed -E 's/^[^@]*@//' | while IFS=: read flagstr dst mode if_os if_user; do
 		expand=no
@@ -27,8 +30,10 @@ find . -path ./.git -prune -o -type f \! -name install.sh -print | while read i;
 			contents=${(e)contents}
 		fi
 
+		printf "%s" "$contents" > $file
+
 		install -d -m 755 $(dirname $dst)
-		install -m ${mode:-644} <(printf "%s" "$contents") $dst
+		install -m ${mode:-644} $file $dst
 
 		echo "$i -> $dst"
 	done
