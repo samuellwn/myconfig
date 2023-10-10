@@ -85,6 +85,7 @@ require('lazy').setup({
 	{ 'phaazon/hop.nvim', branch = 'v2' },
 	'christoomey/vim-tmux-navigator',
 	'ds26gte/info.vim',
+	'andymass/vim-tradewinds',
 
 	-- Unknown
 --	'andreshazard/vim-freemarker',
