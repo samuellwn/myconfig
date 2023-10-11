@@ -144,6 +144,8 @@ cmd('colorscheme dracowizard')
 -- colorscheme afterglow
 -- colorscheme sonokai
 
+cmd('packadd cfilter')
+
 --[[
 require("sidebar-nvim").setup {
 	side = "left",
