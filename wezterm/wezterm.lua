@@ -6,6 +6,26 @@ local wezterm = require 'wezterm'
 local act = wezterm.action
 
 local config = {
+	ssh_domains = {
+		{
+			name = 'hoard',
+			remote_address = 'hoard',
+			username = 'dracowizard',
+			remote_wezterm_path = '/opt/homebrew/bin/wezterm',
+		},
+		{
+			name = 'joshair',
+			remote_address = 'joshair',
+			username = 'dracowizard',
+			remote_wezterm_path = '/opt/homebrew/bin/wezterm',
+		},
+		{
+			name = 'imac',
+			remote_address = 'imac',
+			username = 'dracowizard',
+			remote_wezterm_path = '/opt/homebrew/bin/wezterm',
+		},
+	},
 	font = wezterm.font 'Fira Code',
 	keys = {
 		{ key = 'Tab', mods = 'CTRL', action = act.ActivateTabRelative(1) },
