@@ -32,8 +32,8 @@ if [[ -n ${forwards[$host]} ]]; then
 
 	${=forwards[$host]} &
 	echo $! > $pidfile
-	disown $!
+	disown %%
 fi
 
 # launch the wezterm
-exec ${=wezterm[$host]}
+exec ${=wezterms[$host]}
