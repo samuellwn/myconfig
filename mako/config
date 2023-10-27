@@ -1,0 +1,5 @@
+# @!os:linux
+# @!user:dracowizard
+# @!install:644:$HOME/.config/mako/config
+
+default-timout=5000

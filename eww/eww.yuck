@@ -1,0 +1,16 @@
+; @!os:linux
+; @!user:dracowizard
+; @!install:644:$HOME/.config/eww/eww.yuck
+
+(defwindow bar
+	:monitor 0
+	:geometry (geometry
+		:height "100%"
+		:width "24px"
+		:anchor "left center")
+	:stacking "fg"
+	:reserve (struts :distance "24px" :side "left")
+	:windowtype "dock"
+	:wm-ignore "false"
+
+	"bar")
