@@ -1,4 +1,6 @@
--- @install:$HOME/.config/nvim/colors/dracowizard.lua:644:unix:*
+-- @!os:unix
+-- @!install:644:$HOME/.config/nvim/colors/dracowizard.lua
+
 local Highlite = require 'highlite' -- @type Highlite
 local Groups = require 'highlite.groups' -- @type highlite.Groups
 local Palette = require 'highlite.color.palette' -- @type highlite.color.Palette

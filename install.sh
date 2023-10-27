@@ -8,47 +8,48 @@ esac
 file=$(mktemp /tmp/myconfig.XXXXXXX)
 trap "rm $file" EXIT
 
-find . -path ./.git -prune -o -type f \! -name install.sh -print | while read i; do
-	grep '@install[,:]' "$i" | sed -E 's/^[^@]*@//' | while IFS=: read flagstr dst mode if_os if_user; do
-		expand=no
-		eval "$(echo "$flagstr" | tr , '\n' | sed 's/^.*$/&=yes/' | tr '\n' ';')"
-
-		if [[ $if_os != $OS && $if_os != $OS2 && $if_os != "*" ]]; then
+find . -path ./.git -prune -o -type f \! -name install.sh -print | while read src; do
+	zshexpn=no
+	if_os=
+	if_user=
+	if_host=
+	grep -E '@!\w+:' $src | sed -E 's/^.*@!//' | while IFS=: read -Ar cmd; do
+		case $cmd[1] in
+			os) if_os=$cmd[2];;
+			user) if_user=$cmd[2];;
+			host) if_host=$cmd[2];;
+			zshexpn) zshexpn=yes;;
+		esac
+		if [[ -n $if_os && $if_os != $OS && $if_os != $OS2 ]]; then
 			continue
 		fi
-
-		if [[ $if_user != $USER && $if_user != "*" ]]; then
+		if [[ -n $if_user && $if_user != $USER ]]; then
 			continue
 		fi
-
-		# run expansion on dst
-		dst=${(e)dst}
-
-		# maybe run expansion on file contents
-		contents="$(cat $i)"
-		if [[ $expand = yes ]]; then
-			contents=${(e)contents}
+		if [[ -n $if_host && $if_host != $(hostname) ]]; then
+			continue
 		fi
+		case $cmd[1] in
+			install)
+				dst=${(e)cmd[3]}
+				instsrc=$src
+				if [[ $zshexpn = yes ]]; then
+					contents=$(cat $src)
+					contents=${(e)contents}
+					printf "%s" $contents > $file
+					instsrc=$file
+				fi
 
-		printf "%s" "$contents" > $file
-
-		install -d -m 755 $(dirname $dst)
-		install -m ${mode:-644} $file $dst
-
-		echo "$i -> $dst"
+				install -d -m 755 $(dirname $dst)
+				install -m ${cmd[2]} $instsrc $dst
+				echo "$src -> $dst"
+				;;
+			postexec)
+				# uncomment once i'm sure this does the right thing
+				# ${=cmd[2]}
+				echo "NOT IMPLEMENTED exec $cmd[2]"
+				;;
+		esac
 	done
-	grep '@postexec:' "$i" | while IFS=: read read if_os if_user cmd; do
-		if [[ $if_os != $OS && $if_os != $OS2 && $if_os != "*" ]]; then
-			continue
-		fi
-
-		if [[ $if_user != $USER && $if_user != "*" ]]; then
-			continue
-		fi
-
-		${=cmd}
-
-		echo "exec $cmd"
-	done
-
 done
+
