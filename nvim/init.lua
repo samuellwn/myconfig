@@ -71,7 +71,9 @@ require('lazy').setup({
 
 	-- Language support
 	'sebdah/vim-delve', 'sheerun/vim-polyglot',
-	{ 'phpactor/phpactor', build = 'composer  install' },
+	{ 'neovim/nvim-lspconfig', dependencies = { 'williamboman/mason-lspconfig.nvim' }},
+	{ 'williamboman/mason-lspconfig.nvim', dependencies = { 'williamboman/mason.nvim' }},
+	-- { 'phpactor/phpactor', build = 'composer  install' },
 
 	-- Git
 	--'tpope/vim-fugitive',
@@ -289,6 +291,8 @@ cmp.setup.cmdline(':', {
 		{ name = 'cmdline' }
 	})
 })
+require('mason').setup()
+require('mason-lspconfig').setup()
 local caps = require('cmp_nvim_lsp').default_capabilities()
 local lsp = require 'lspconfig'
 local servers = {
