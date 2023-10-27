@@ -1,0 +1,50 @@
+# @!os:unix
+# @!user:dracowizard
+# @!install:644:$HOME/.gitconfig
+[credential]
+	helper = cache
+[commit]
+	gpgSign = true
+[user]
+	signingkey = 0xE98B5E3239DD20F3
+	name = Samuel Loewen
+	email = samuellwn@gmail.com
+[color]
+	ui = true
+[pull]
+	rebase = true
+[rebase]
+	autosquash = true
+[cola]
+	safemode = false
+	blameviewer = git gui blame
+	theme = flat-dark-red
+	startupmode = list
+[gui]
+	editor = nvim
+	historybrowser = gitk
+[diff]
+	tool = vimdiff
+[merge]
+	tool = vimdiff
+[push]
+	recurseSubmodules = on-demand
+[mergetool "vimdiff"]
+	path = nvim
+
+# Grow a thicker skin. If you're this easily offended, there's something wrong
+# with you.
+[init]
+	defaultBranch = master
+
+#[protocol "file"]
+#	allow = always
+
+# This is here because of a deficiency in the go module system. You can't tell
+# which protocol to use for git repos, and it uses https by default. This
+# forces all GitHub and GitLab repos to be accessed over SSH so accessing
+# private go packages works.
+[url "git@gitlab.com:"]
+	insteadOf = https://gitlab.com/
+[url "git@github.com:"]
+	insteadOf = https://github.com/
