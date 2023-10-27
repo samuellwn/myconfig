@@ -1,4 +1,8 @@
 #! /bin/zsh
+#
+# @!os:linux
+# @!user:dracowizard
+# @!install:755:$HOME/.config/hypr/wezterm-remotes.sh
 
 declare -A wezterms forwards
 
