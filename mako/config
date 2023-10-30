@@ -2,4 +2,4 @@
 # @!user:dracowizard
 # @!install:644:$HOME/.config/mako/config
 
-default-timout=5000
+default-timeout=5000
