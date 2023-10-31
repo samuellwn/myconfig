@@ -187,7 +187,52 @@ require('luasnip.loaders.from_vscode').lazy_load()
 
 local cmp = require 'cmp'
 local luasnip = require('luasnip')
+local function cmpShowOrComplete()
+	if cmp.visible() then
+		cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })
+	else
+		cmp.complete({reason = 'manual'})
+	end
+end
+local function cmpSelectNextOrJump(fallback)
+	if cmp.visible() then
+		cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+	elseif luasnip.expandable_or_locally_jumpable() then
+		luasnip.expand_or_jump()
+	else
+		fallback()
+	end
+end
+local function cmpSelectPrevOrJump(fallback)
+	if cmp.visible() then
+		cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
+	elseif luasnip.locally_jumpable(-1) then
+		luasnip.jump(-1)
+	else
+		fallback()
+	end
+end
+local function cmpClose(fallback)
+	if cmp.visible() then
+		cmp.close()
+	else
+		fallback()
+	end
+end
+
 cmp.setup {
+	mapping = {
+		['<C-Space>'] = cmp.mapping(cmpShowOrComplete, {"c", "i"}),
+		['<S-Space>'] = cmp.mapping(cmpShowOrComplete, {"c", "i"}),
+		['<C-n>'] = cmp.mapping(cmpSelectNextOrJump, {"c", "i"}),
+		['<Tab>'] = cmp.mapping(cmpSelectNextOrJump, {"c", "i"}),
+		['<C-p>'] = cmp.mapping(cmpSelectPrevOrJump, {"c", "i"}),
+		['<S-Tab>'] = cmp.mapping(cmpSelectPrevOrJump, {"c", "i"}),
+		['<C-o>'] = cmp.mapping(cmpClose, {"c", "i"}),
+		['<C-u>'] = cmp.mapping.scroll_docs(-8),
+		['<C-d>'] = cmp.mapping.scroll_docs(8),
+
+	},
 	snippet = {
 		expand = function(args)
 			luasnip.snip_expand(luasnip.parser.parse_snippet(
@@ -201,61 +246,6 @@ cmp.setup {
 			max_width = 60,
 			max_height = 80,
 		}),
-	},
-	mapping = {
-		['<C-Space>'] = cmp.mapping(function()
-			if cmp.visible() then
-				cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
-			else
-				cmp.complete({reason = 'manual'})
-			end
-		end, {"c", "i"}),
-		['<C-n>'] = cmp.mapping({
-			c = function()
-				if cmp.visible() then
-					cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-				elseif luasnip.expandable_or_locally_jumpable() then
-					luasnip.expand_or_jump()
-				else
-					vim.api.nvim_feedkeys(t('<Down>'), 'n', true)
-				end
-			end,
-			i = function(fallback)
-				if cmp.visible() then
-					cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-				else
-					fallback()
-				end
-			end,
-		}),
-		['<C-p>'] = cmp.mapping({
-			c = function()
-				if cmp.visible() then
-					cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
-				elseif luasnip.locally_jumpable(-1) then
-					luasnip.jump(-1)
-				else
-					vim.api.nvim_feedkeys(t('<Up>'), 'n', true)
-				end
-			end,
-			i = function(fallback)
-				if cmp.visible() then
-					cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
-				else
-					fallback()
-				end
-			end,
-		}),
-		['<C-o>'] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.close()
-			else
-				fallback()
-			end
-		end, {"c", "i"}),
-		['<C-u>'] = cmp.mapping.scroll_docs(-8),
-		['<C-d>'] = cmp.mapping.scroll_docs(8),
-
 	},
 	preselect = cmp.PreselectMode.None,
 	sorting = {
