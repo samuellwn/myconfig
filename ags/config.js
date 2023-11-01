@@ -28,7 +28,7 @@ const bar = Widget.Window({
 	focusable: true,
 	monitor: 0,
 	layer: 'top',
-	child: VBox([
+	child: MBox([
 		Widget.Button({
 			onPrimaryClick: 'wofi --show drun',
 			child: Widget.Icon({
