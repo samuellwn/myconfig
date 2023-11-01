@@ -5,6 +5,19 @@
 import Widget from 'resource:///com/github/Aylur/ags/widget.js';
 import App from 'resource:///com/github/Aylur/ags/app.js';
 import Hyprland from 'resource:///com/github/Aylur/ags/service/hyprland.js';
+import Gtk from 'gi://Gtk?version=3.0';
+import Gdk from 'gi://Gdk?version=3.0';
+
+const display = Gdk.Display.get_default();
+const leftMonitor = display.get_monitor_at_point(0, 0);
+
+// This is caused by an ags deficiency
+for (var monIdx = 0; monIdx < display.get_n_monitors(); monIdx++) {
+	const mon = display.get_monitor(monIdx);
+	if (leftMonitor.workarea.equal(mon.workarea)) {
+		break;
+	}
+}
 
 const barVertical = true;
 const barAnchor = barVertical ? ['top', 'left', 'bottom'] : ['left', 'top', 'right'];
@@ -26,7 +39,7 @@ const bar = Widget.Window({
 	anchor: ['top', 'left', 'bottom'],
 	exclusive: true,
 	focusable: true,
-	monitor: 0,
+	monitor: monIdx,
 	layer: 'top',
 	child: MBox([
 		Widget.Button({
