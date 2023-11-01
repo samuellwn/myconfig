@@ -25,6 +25,7 @@
 	historybrowser = gitk
 [diff]
 	tool = vimdiff
+	algorithm = histogram
 [merge]
 	tool = vimdiff
 [push]
