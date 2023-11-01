@@ -197,7 +197,7 @@ end
 local function cmpSelectNextOrJump(fallback)
 	if cmp.visible() then
 		cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-	elseif luasnip.expandable_or_locally_jumpable() then
+	elseif luasnip.expand_or_locally_jumpable() then
 		luasnip.expand_or_jump()
 	else
 		fallback()
