@@ -26,7 +26,7 @@ find . -path ./.git -prune -o -type f \! -name install.sh -print | while read sr
 		if [[ -n $if_user && $if_user != $USER ]]; then
 			continue
 		fi
-		if [[ -n $if_host && $if_host != $(hostname) ]]; then
+		if [[ -n $if_host && $if_host != $HOST ]]; then
 			continue
 		fi
 		case $cmd[1] in
