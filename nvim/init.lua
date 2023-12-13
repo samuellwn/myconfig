@@ -34,6 +34,10 @@ o.laststatus = 2
 o.tabstop = 4
 o.shiftwidth = 4
 o.expandtab = false
+
+o.breakindent = true
+o.breakindentopt = 'shift:8'
+o.linebreak = true
 o.wrap = false
 
 g.polyglot_disabled = { 'csv.plugin' }
@@ -502,6 +506,12 @@ end)
 local auFormat = augroup("format")
 au(auFormat, "BufWritePre", {"*.cs", "*.go", "go.work", "go.mod"}, function(ev)
 	vim.lsp.buf.format({bufnr = ev.buf})
+end)
+
+-- The Telegram codebase is full of stupidly long lines.
+local auWrap = augroup("wrap")
+au(auWrap, {"BufEnter", "BufFilePost"}, {"*.swift", "*.m "}, function()
+	vim.b.wrap = true
 end)
 
 --[[
