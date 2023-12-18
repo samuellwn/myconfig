@@ -158,6 +158,21 @@ cmd('colorscheme dracowizard')
 
 cmd('packadd cfilter')
 
+-- The Neovim clipboard provider priority is wrong and can't be overridden. I have to
+-- rewrite the functionality neovim already has so it actually works. I don't know who
+-- though it would be a good idea to prefer the system clipboard over lemonade.
+vim.g.clipboard = {
+	name = 'my-clipboard',
+	copy = {
+		['+'] = {'zsh', '-c', '(lemonade copy || pbcopy || wl-copy || xclip -selection clipboard -i) 2>/dev/null'},
+		['*'] = {'zsh', '-c', '(pbcopy || wl-copy || xclip -selection clipboard -i) 2>/dev/null'},
+	},
+	paste = {
+		['+'] = {'zsh', '-c', '(lemonade paste || pbpaste || wl-paste || xclip -selection clipboard -o) 2>/dev/null'},
+		['*'] = {'zsh', '-c', '(pbpaste || wl-paste || xclip -selection clipboard -o) 2>/dev/null'},
+	},
+}
+
 --[[
 require("sidebar-nvim").setup {
 	side = "left",
