@@ -46,6 +46,8 @@ g.ale_sign_column_always = 1
 g.ale_linters_ignore = { 'mcs', 'mcsc', 'csc' }
 g.OmniSharp_server_use_net6 = 1
 
+g.suda_smart_edit = 1
+
 cmd('set diffopt-=filler')
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -113,6 +115,7 @@ require('lazy').setup({
 	{ 'junegunn/fzf', build = function() vim.fn['fzf#install']() end },
 	{ 'junegunn/fzf.vim', dependencies = 'fzf' },
 	{ 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
+	'lambdalisue/suda.vim',
 --	use { 'antoinemadec/coc-fzf', branch = 'release', after = { 'fzf', 'fzf.vim' } }
 
 	-- Colors
