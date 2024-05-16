@@ -111,17 +111,16 @@ local mono = 220
 local palette = Palette.derive(bg, {
 	bg          = calculate_color({mono, 0.00, 0.00}),
 	text        = calculate_color({mono, 0.20, 1.00}),
-	error       = calculate_color({   5, 0.90, 0.20}),
+	error       = calculate_color({   5, 0.90, 1.00}),
 	warning     = calculate_color({  39, 0.90, 1.00}),
 	hint        = calculate_color({ 207, 1.00, 1.00}),
 	ok          = calculate_color({ 105, 0.80, 1.00}),
 	select      = calculate_color({   0, 0.00, 0.15}),
 
-	-- hopefully, this is what you're supposed to do with these
-	bg_contrast_low       = calculate_color({0, 0.0, 0.06}),
-	bg_contrast_high      = calculate_color({5, 0.1, 0.20}),
-	text_contrast_bg_low  = calculate_color({0, 0.0, 0.94}),
-	text_contrast_bg_high = calculate_color({0, 0.0, 0.80}),
+	bg_contrast_low       = calculate_color({220, 0.1, 0.25}),
+	bg_contrast_high      = calculate_color({220, 0.1, 0.50}),
+	text_contrast_bg_low  = calculate_color({220, 0.1, 0.75}),
+	text_contrast_bg_high = calculate_color({220, 0.1, 1.00}),
 
 	comment     = calculate_color({mono, 0.40, 0.75}),
 	exception   = calculate_color({   5, 0.90, 0.90}),
@@ -139,27 +138,59 @@ local palette = Palette.derive(bg, {
 	property    = calculate_color({ 246, 0.40, 1.00}),
 })
 
+
 local terminal_palette = {
 	Black, DarkRed, DarkGreen, DarkYellow, DarkBlue, DarkMagenta, DarkCyan, 
 	Grey, DarkGrey, Red, Green, Yellow, Blue, Magenta, Cyan, White,
 }
 
 local groups = Highlite.groups('default', palette)
+function groups:override(name, hl)
+	if self[name] == nil then
+		self[name] = {}
+	end
+	while type(self[name]) == 'string' or self[name].link ~= nil do
+		if type(self[name]) == 'string' then
+			self[name] = self[self[name]]
+		else
+			self[name] = self[self[name].link]
+		end
+		if self[name] == nil then
+			self[name] = {}
+		end
+	end
+	self[name] = Groups.extend(hl, self[name])
+end
+function groups:generate(name, terminal_palette)
+	self.override = nil
+	self.generate = nil
+	Highlite.generate(name, self, terminal_palette)
+end
+
 groups.ColorColumn   = {bg = calculate_color({0, 0.0, 0.07})}
 groups.PMenuSel      = {bg = calculate_color({0, 0.0, 0.07})}
 groups["@exception"] = {fg = palette.exception}
 
 groups["@operator"] = Groups.extend({italic = true, bold = false}, groups '@operator')
-groups.ExtraWhitespace = {bg = palette.error}
-groups.ErrorMsg = {fg = palette.exception}
 
-groups["@text.title.1"] = {fg = palette.exception}
+groups.Error = {bg = calculate_color({colors.red, 0.9, 0.2})}
+groups.ExtraWhitespace = 'Error'
+groups.NvimInternalError = {bg = palette.error, fg = palette.bg, bold = true}
+--groups.ErrorMsg = {fg = palette.exception}
+
+--groups["@text.title.1"] = {fg = palette.exception}
 
 groups.DiagnosticOk    = {fg = calculate_color({colors.green,  0.8, 0.7})}
 groups.DiagnosticHint  = {fg = calculate_color({colors.blue,   0.9, 1.0})}
 groups.DiagnosticInfo  = {fg = calculate_color({colors.blue,   0.9, 1.0})}
 groups.DiagnosticWarn  = {fg = calculate_color({colors.yellow, 0.9, 1.0})}
 groups.DiagnosticError = {fg = calculate_color({colors.red,    0.9, 0.9})}
+
+groups:override('DiagnosticUnderlineOk',    {sp = calculate_color({colors.green,  0.8, 0.5})})
+groups:override('DiagnosticUnderlineHint',  {sp = calculate_color({colors.blue,   0.9, 0.7})})
+groups:override('DiagnosticUnderlineInfo',  {sp = calculate_color({colors.blue,   0.9, 0.7})})
+groups:override('DiagnosticUnderlineWarn',  {sp = calculate_color({colors.yellow, 0.9, 0.7})})
+groups:override('DiagnosticUnderlineError', {sp = calculate_color({colors.red,    0.9, 0.6})})
 
 groups.DiffAdd    = {bg = calculate_color({colors.green,  0.7, 0.1})}
 groups.DiffChange = {bg = calculate_color({colors.yellow, 0.7, 0.1})}
@@ -171,4 +202,4 @@ groups.Folded = {
 	bg = calculate_color({colors.blue, 0.7, 0.1})
 }
 
-Highlite.generate('dracowizard', groups, terminal_palette)
+groups:generate('dracowizard', terminal_palette)
