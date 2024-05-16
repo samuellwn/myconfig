@@ -197,6 +197,9 @@ groups.DiffChange = {bg = calculate_color({colors.yellow, 0.7, 0.1})}
 groups.DiffText   = {bg = calculate_color({colors.yellow, 0.7, 0.2})}
 groups.DiffDelete = {bg = calculate_color({colors.red,    0.7, 0.1})}
 
+groups.Search = {bg = calculate_color({25, 0.7, 0.3})}
+groups.IncSearch = 'Search'
+
 groups.Folded = {
 	fg = palette.comment,
 	bg = calculate_color({colors.blue, 0.7, 0.1})
