@@ -47,7 +47,7 @@
 # which protocol to use for git repos, and it uses https by default. This
 # forces all GitHub and GitLab repos to be accessed over SSH so accessing
 # private go packages works.
-[url "git@gitlab.com:"]
-	insteadOf = https://gitlab.com/
-[url "git@github.com:"]
-	insteadOf = https://github.com/
+#[url "git@gitlab.com:"]
+#	insteadOf = https://gitlab.com/
+#[url "git@github.com:"]
+#	insteadOf = https://github.com/
