@@ -44,9 +44,11 @@
 #	allow = always
 
 # This is here because of a deficiency in the go module system. You can't tell
-# which protocol to use for git repos, and it uses https by default. This
-# forces all GitHub and GitLab repos to be accessed over SSH so accessing
-# private go packages works.
+# which protocol to use for git repos, and it uses https by default.
+[url "git@gitlab.com:marcomandrodd/honeycomb"]
+	insteadOf = https://gitlab.com/marcomandrodd/honeycomb
+[url "git@gitlab.com:JoshRodd/ecore"]
+	insteadOf = https://gitlab.com/JoshRodd/ecore
 #[url "git@gitlab.com:"]
 #	insteadOf = https://gitlab.com/
 #[url "git@github.com:"]

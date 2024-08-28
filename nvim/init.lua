@@ -18,7 +18,7 @@ o.backup = false
 o.writebackup = false
 o.cmdheight = 2
 o.updatetime = 300
-o.signcolumn = 'number'
+o.signcolumn = 'yes:1'
 o.colorcolumn = '100'
 o.number = true
 o.termguicolors = true
@@ -87,6 +87,7 @@ require('lazy').setup({
 	'junegunn/gv.vim',
 	'jreybert/vimagit',
 	{'idanarye/vim-merginal', dependencies = {'tpope/vim-fugitive'}},
+	'lewis6991/gitsigns.nvim',
 
 	-- Status bar
 	{ 'nvim-lualine/lualine.nvim', dependencies = {'kyazdani42/nvim-web-devicons'}},
@@ -309,7 +310,7 @@ local caps = require('cmp_nvim_lsp').default_capabilities()
 local lsp = require 'lspconfig'
 local servers = {
 	'gopls', 'fsautocomplete', 'pyright', 'ocamllsp', 'rust_analyzer',
-	'erlangls', 'phpactor', 'sourcekit', 'ols',
+	'erlangls', 'phpactor', 'clangd', 'ols',
 }
 for _, s in ipairs(servers) do
 	lsp[s].setup {capabilities = caps}
@@ -449,6 +450,9 @@ end, {})
 vim.g.tmux_navigator_save_on_switch = 0
 vim.g.tmux_navigator_disable_when_zoomed = 1
 -- End setup for 'christoomey/vim-tmux-navigator'
+-- Setup for 'lewis6991/gitsigns.nvim'
+require('gitsigns').setup()
+-- End setup for 'lewis6991/gitsigns.nvim'
 
 local autocmd = vim.api.nvim_create_autocmd
 
@@ -469,6 +473,9 @@ require('nvim-treesitter.configs').setup {
 	auto_install = true,
 	highlight = {
 		enable = true,
+	},
+	indent = {
+		enable = { "bash" },
 	},
 }
 
@@ -493,7 +500,7 @@ au(auLsp, "LspAttach", "*", function(args)
 	bufmap('n', 'gi', vim.lsp.buf.implementation)
 	bufmap('n', 'go', vim.lsp.buf.type_definition)
 	bufmap('n', 'gr', vim.lsp.buf.references)
-	bufmap('n', ' c', vim.lsp.buf.signature_help)
+	bufmap('n', ' s', vim.lsp.buf.signature_help)
 	bufmap('i', '<C-c>', vim.lsp.buf.signature_help)
 	bufmap('n', ' c', vim.lsp.buf.rename)
 	bufmap('n', 'gl', vim.diagnostic.open_float)
