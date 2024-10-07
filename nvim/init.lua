@@ -28,7 +28,7 @@ if not string.find(o.shortmess, 'c', 1, true) then
 	o.shortmess = o.shortmess .. 'c'
 end
 
-g.man_hardwrap = 72
+g.man_hardwrap = 1
 
 o.laststatus = 2
 o.tabstop = 4
@@ -40,7 +40,7 @@ o.breakindentopt = 'shift:8'
 o.linebreak = true
 o.wrap = false
 
-g.polyglot_disabled = { 'csv.plugin' }
+g.polyglot_disabled = { 'csv.plugin', 'terraform' }
 g.ale_disable_lsp = 1
 g.ale_sign_column_always = 1
 g.ale_linters_ignore = { 'mcs', 'mcsc', 'csc' }
@@ -80,6 +80,7 @@ require('lazy').setup({
 	{ 'neovim/nvim-lspconfig', dependencies = { 'williamboman/mason-lspconfig.nvim' }},
 	{ 'williamboman/mason-lspconfig.nvim', dependencies = { 'williamboman/mason.nvim' }},
 	-- { 'phpactor/phpactor', build = 'composer  install' },
+	'psf/black', -- opinionated python autofomatter
 
 	-- Git
 	--'tpope/vim-fugitive',
@@ -89,8 +90,18 @@ require('lazy').setup({
 	{'idanarye/vim-merginal', dependencies = {'tpope/vim-fugitive'}},
 	'lewis6991/gitsigns.nvim',
 
-	-- Status bar
+	-- UI Improvements
 	{ 'nvim-lualine/lualine.nvim', dependencies = {'kyazdani42/nvim-web-devicons'}},
+	{
+		'nvim-telescope/telescope.nvim', branch = '0.1.x',
+		dependencies = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}},
+	},
+	{
+		'nvim-telescope/telescope-fzf-native.nvim', build = 'make',
+		dependencies = {{'nvim-telescope/telescope.nvim'}},
+	},
+	{ 'stevearc/dressing.nvim', dependencies = {{'nvim-telescope/telescope.nvim'}}},
+	{ 'Shatur/neovim-session-manager', dependencies = {{'nvim-lua/plenary.nvim'}}},
 
 	-- Navigation
 	{ 'vimwiki/vimwiki', disable = true },
@@ -101,11 +112,6 @@ require('lazy').setup({
 
 	-- Unknown
 --	'andreshazard/vim-freemarker',
-	'psf/black',
-	{
-		'nvim-telescope/telescope.nvim',
-		dependencies = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}},
-	},
 --	'sidebar-nvim/sidebar.nvim',
 	'andreshazard/vim-logreview', 'tpope/vim-repeat', 'tpope/vim-surround',
 	'Valloric/ListToggle', 'posva/vim-vue', 'elzr/vim-json',
@@ -376,6 +382,13 @@ lsp.hls.setup {
 	filetypes = { 'haskell', 'lhaskell', 'cabal' },
 }
 -- End setup for 'hrsh7th/nvim-cmp'
+-- Setup for 'nvim-telescope/telescope.nvim`
+require('telescope').setup{}
+require('telescope').load_extension('fzf')
+-- End setup for 'nvim-telescope/telescope.nvim`
+-- Setup for 'Shatur/neovim-session-manager'
+map('n', ' e', '<cmd>SessionManager load_session<cr>', { noremap = true })
+-- End setup for 'Shatur/neovim-session-manager'
 -- Setup for 'nvim-lualine/lualine.nvim'
 require('lualine').setup{
 	options = {
@@ -474,9 +487,9 @@ require('nvim-treesitter.configs').setup {
 	highlight = {
 		enable = true,
 	},
-	indent = {
-		enable = { "bash" },
-	},
+--	indent = {
+--		enable = { "bash" },
+--	},
 }
 
 vim.diagnostic.config {
@@ -566,6 +579,8 @@ indent(8, false, "*.txt")
 ]]
 
 au(augroup("resize"), "VimResized", "*", "wincmd =")
+
+au(augroup("filetypes"), {"BufRead", "BufNewFile"}, {"*.hcl", "*.hcldec"}, "set filetype=hcl")
 
 -- cmd([[
 -- 	augroup filetypes
