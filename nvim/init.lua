@@ -9,6 +9,8 @@ cmd, map = vim.cmd, vim.keymap.set
 home = os.getenv("HOME")
 g.mapleader = ' '
 
+--for line in string.gmatch(vim.fn.system({"env"}), "[^\r\n]+"
+
 function nnoremap(from, to)
     map('n', from, to, { noremap = true })
 end
@@ -45,6 +47,7 @@ g.ale_disable_lsp = 1
 g.ale_sign_column_always = 1
 g.ale_linters_ignore = { 'mcs', 'mcsc', 'csc' }
 g.OmniSharp_server_use_net6 = 1
+g.instant_username = 'dracowizard'
 
 g.suda_smart_edit = 1
 
@@ -109,6 +112,9 @@ require('lazy').setup({
 	'christoomey/vim-tmux-navigator',
 	'ds26gte/info.vim',
 	'andymass/vim-tradewinds',
+
+	-- Collaborative editing
+	'jbyuki/instant.nvim',
 
 	-- Unknown
 --	'andreshazard/vim-freemarker',
@@ -315,12 +321,23 @@ require('mason-lspconfig').setup()
 local caps = require('cmp_nvim_lsp').default_capabilities()
 local lsp = require 'lspconfig'
 local servers = {
-	'gopls', 'fsautocomplete', 'pyright', 'ocamllsp', 'rust_analyzer',
+	'gopls', 'fsautocomplete', 'ocamllsp', 'rust_analyzer',
 	'erlangls', 'phpactor', 'clangd', 'ols',
 }
 for _, s in ipairs(servers) do
 	lsp[s].setup {capabilities = caps}
 end
+lsp.pyright.setup {
+	capabilities = caps,
+	on_new_config = function(config, root_dir)
+		local env = vim.trim(vim.fn.system(
+			'cd "' .. root_dir ..'" && poetry env info -p 2>/dev/null'
+		))
+		if string.len(env) > 0 then
+			config.settings.python.pythonPath = env .. '/bin/python'
+		end
+	end
+}
 lsp.omnisharp.setup {
 	capabilities = caps,
 	cmd = { "omnisharp" },
@@ -487,9 +504,9 @@ require('nvim-treesitter.configs').setup {
 	highlight = {
 		enable = true,
 	},
---	indent = {
---		enable = { "bash" },
---	},
+	indent = {
+		enable = { "bash" },
+	},
 }
 
 vim.diagnostic.config {
@@ -545,6 +562,7 @@ local auFormat = augroup("format")
 au(auFormat, "BufWritePre", {"*.cs", "*.go", "go.work", "go.mod"}, function(ev)
 	vim.lsp.buf.format({bufnr = ev.buf})
 end)
+au(auFormat, "BufWritePre", {"*.py"}, "Black")
 
 -- The Telegram codebase is full of stupidly long lines.
 local auWrap = augroup("wrap")
@@ -552,7 +570,6 @@ au(auWrap, {"BufEnter", "BufFilePost"}, {"*.swift", "*.m "}, function()
 	vim.b.wrap = true
 end)
 
---[[
 local auIndent = augroup("indentation")
 function indent(width, expand, ...)
 	if expand == nil then
@@ -565,14 +582,15 @@ function indent(width, expand, ...)
 	end)
 end
 
--- LEAVE MY INDENTATION ALONE!
-indent(4, false, "*")
-
 -- YAML is an abomination
 indent(2, true, "*.yml", "*.yaml")
 
 -- Here we compensate for people who are wrong.
-indent(4, true, "*.hs", "*.cabal", "*.zig", "*.elm")
+indent(4, true, "*.hs", "*.cabal", "*.zig", "*.elm", "*.py")
+
+--[[
+-- LEAVE MY INDENTATION ALONE!
+indent(4, false, "*")
 
 -- Help mode needs large tabstops
 indent(8, false, "*.txt")

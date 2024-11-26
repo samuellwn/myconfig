@@ -29,6 +29,21 @@ ShellRoot {
 				anchors.verticalCenter: parent.verticalCenter
 				text: time
 			}
+
+			PopupWindow {
+				visible: notifShowing.length > 0
+				anchor.window: parent
+				anchor.edges: Edges.Bottom | Edges.right
+				anchor.gravity: Edges.Bottom | Edges.right
+				screen: parent.screen
+
+				ListView {
+					model: notifShowing
+					delegate: Rectangle {
+						width: 250
+					}
+				}
+			}
 		}
 	}
 
@@ -41,20 +56,27 @@ ShellRoot {
 		onTriggered: time = (new Date()).toLocaleString(Qt.locale())
 	}
 
-	property list<Notification> notifHist: []
-	property list<Notification> notifShowingCrit: []
-	property list<Notification> notifShowingNorm: []
-	property list<Notification> notifShowingLow: []
-
-	function handleNotifClosed(closed) {
-		for (let notif of notifHist) {
-			if (notif.id == notifHist.id) {
-				// remove
-			}
-		}
+	function Timer() {
+		return Qt.createQmlObject("import QtQuick; Timer {}", root);
 	}
 
-	function handleNotifHidden(notif) {
+	function after(delay, do) {
+		timer = new Timer();
+		timer.interval = delay;
+		timer.repeat = false;
+		timer.triggered.connect(cb);
+		timer.triggered.connect(function release() {
+			timer.triggered.disconnect(cb);
+			timer.triggered.disconnect(release);
+		})
+	}
+
+	property var notifHist: []
+	property var notifShowing: []
+
+	function handleNotifClosed(closed) {
+		notifHist = notifHist.filter(notif => notif.id != closed.id);
+		notifShowing = notifShowing.filter(notif => notif.id != closed.id);
 	}
 
 	NotificationServer {
@@ -71,18 +93,28 @@ ShellRoot {
 				notification.expire()
 				return
 			}
-			if (!notification.transient) {
-				notifHist.push(notification)
-			}
+
+			notification.closed.connect(handleNotifClosed);
 			if (notification.lastGeneration) {
-				return
-			}
-			if (notification.urgency == NotificationUrgency.Critical) {
-				notifShowingCrit.push(notification)
-			} else if (notification.urgency == NotificationUrgency.Normal {
-				notifShowingNorm.push(notification)
+				notifHist.push(notification)
 			} else {
-				notifShowingLow.push(notification)
+				notifShowing.push(notification)
+			}
+
+			let timeout = notification.expireTimeout
+			if (timeout = -1) {
+				if (notification.urgency == NotificationUrgency.Critical) {
+					timeout = 0
+				} else if (notification.urgency == NotificationUrgency.Normal) {
+					timeout = 30
+				} else if (notification.urgency == NotificationUrgency.Low) {
+					timeout = 5
+				}
+			}
+			if (timeout > 0) {
+				after(timeout * 1000, () => {
+					notification.expire();
+				});
 			}
 		}
 	}

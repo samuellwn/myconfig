@@ -1,7 +1,7 @@
 ;; @!os:unix
 ;; @!install:644:$HOME/.config/nvim/queries/bash/indent.scm
 
-[
+([
   (subshell)
   "{"
   "["
@@ -17,9 +17,9 @@
   (command_substitution)
   (arithmetic_expansion)
   (process_substitution)
-] @indent.begin
+] @indent.begin (#set! indent.immediate 1))
 
-[
+([
   "}"
   "]"
   "))"
@@ -33,7 +33,7 @@
   (elif_clause)
   "else"
   (else_clause)
-] @indent.branch
+] @indent.branch (#set! indent.immediate 1))
 
 [
   "}"
