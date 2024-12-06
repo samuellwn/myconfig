@@ -1,7 +1,7 @@
 -- @!os:unix
 -- @!install:644:$HOME/.config/nvim/init.lua
 --[===[ ]===]
-local o, bo, wo, g = vim.o, vim.bo, vim.wo, vim.cmd, vim.g
+local o, bo, wo, g = vim.o, vim.bo, vim.wo, vim.g
 local b, api = vim.b, vim.api, vim.api.nvim_set_keymap
 
 cmd, map = vim.cmd, vim.keymap.set
