@@ -77,6 +77,7 @@ require('lazy').setup({
 			'hrsh7th/cmp-path', 'hrsh7th/cmp-cmdline',
 		},
 	},
+	'andythigpen/nvim-coverage',
 
 	-- Language support
 	'sebdah/vim-delve', 'sheerun/vim-polyglot',
@@ -327,15 +328,37 @@ local servers = {
 for _, s in ipairs(servers) do
 	lsp[s].setup {capabilities = caps}
 end
+local path = require('lspconfig/util').path
+local function get_python_path(workspace)
+	-- Use activated venv
+	if vim.env.VIRTUAL_ENV then
+		return path.join(vim.env.VIRTUAL_ENV, 'bin', 'python')
+	end
+
+	-- Use venv from poetry
+	local match = vim.fn.glob(path.join(workspace, 'pyproject.toml'))
+	if match ~= '' then
+		local venv = vim.fn.trim(vim.fn.system(
+			'poetry --directory "' .. workspace .. '" env info -p'
+		))
+		return path.join(venv, 'bin', 'python')
+	end
+
+	-- Find and use virtualenv in workspace directory.
+	for _, pattern in ipairs({'*', '.*'}) do
+		local match = vim.fn.glob(path.join(workspace, pattern, 'pyvenv.cfg'))
+		if match ~= '' then
+			return path.join(path.dirname(match), 'bin', 'python')
+		end
+	end
+
+	-- Fallback to system Python
+	return exepath('python3') or exepath('python') or 'python'
+end
 lsp.pyright.setup {
 	capabilities = caps,
-	on_new_config = function(config, root_dir)
-		local env = vim.trim(vim.fn.system(
-			'cd "' .. root_dir ..'" && poetry env info -p 2>/dev/null'
-		))
-		if string.len(env) > 0 then
-			config.settings.python.pythonPath = env .. '/bin/python'
-		end
+	before_init = function(_, config)
+		config.settings.python.pythonPath = get_python_path(config.root_dir)
 	end
 }
 lsp.omnisharp.setup {
@@ -481,8 +504,19 @@ vim.g.tmux_navigator_save_on_switch = 0
 vim.g.tmux_navigator_disable_when_zoomed = 1
 -- End setup for 'christoomey/vim-tmux-navigator'
 -- Setup for 'lewis6991/gitsigns.nvim'
-require('gitsigns').setup()
+require('gitsigns').setup {
+	sign_priority = 6,
+}
 -- End setup for 'lewis6991/gitsigns.nvim'
+-- Setup for 'andythigpen/nvim-coverage'
+require('coverage').setup {
+	commands = true,
+	signs = {
+		covered = { hl = "@diff.plus", text = "║" },
+		uncovered = { hl = "@diff.minus", text = "║" },
+	},
+}
+-- End setup for 'andythigpen/nvim-coverage'
 
 local autocmd = vim.api.nvim_create_autocmd
 
