@@ -519,15 +519,20 @@ vim.g.tmux_navigator_disable_when_zoomed = 1
 require('gitsigns').setup {
 	sign_priority = 6,
 }
+map('n', ' gs', require('gitsigns').toggle_signs, {})
 -- End setup for 'lewis6991/gitsigns.nvim'
 -- Setup for 'andythigpen/nvim-coverage'
-require('coverage').setup {
+local cov = require('coverage')
+cov.setup {
 	commands = true,
 	signs = {
 		covered = { hl = "@diff.plus", text = "║" },
 		uncovered = { hl = "@diff.minus", text = "║" },
 	},
 }
+map('n', ' cl', function() cov.load(true) end, {})
+map('n', ' cL', function() cov.load_lcov(".lcov", true) end, {})
+map('n', ' ct', cov.toggle, {})
 -- End setup for 'andythigpen/nvim-coverage'
 
 local autocmd = vim.api.nvim_create_autocmd
@@ -578,7 +583,7 @@ au(auLsp, "LspAttach", "*", function(args)
 	bufmap('n', 'gr', vim.lsp.buf.references)
 	bufmap('n', ' s', vim.lsp.buf.signature_help)
 	bufmap('i', '<C-c>', vim.lsp.buf.signature_help)
-	bufmap('n', ' c', vim.lsp.buf.rename)
+	bufmap('n', ' C', vim.lsp.buf.rename)
 	bufmap('n', 'gl', vim.diagnostic.open_float)
 end)
 
