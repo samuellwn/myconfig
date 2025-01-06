@@ -77,7 +77,8 @@ require('lazy').setup({
 			'hrsh7th/cmp-path', 'hrsh7th/cmp-cmdline',
 		},
 	},
-	'andythigpen/nvim-coverage',
+	'andythigpen/nvim-coverage', -- Test coverage in gutter
+	'stevearc/conform.nvim', -- Autoformat
 
 	-- Language support
 	'sebdah/vim-delve', 'sheerun/vim-polyglot',
@@ -422,6 +423,17 @@ lsp.hls.setup {
 	filetypes = { 'haskell', 'lhaskell', 'cabal' },
 }
 -- End setup for 'hrsh7th/nvim-cmp'
+-- Setup for 'stevearc/conform.nvim'
+require("conform").setup({
+	formatters_by_ft = {
+		python = { "ruff_format" },
+	},
+	format_on_save = {
+		timeout_ms = 500,
+		lsp_format = "fallback",
+	},
+})
+-- End setup for 'stevearc/conform.nvim'
 -- Setup for 'nvim-telescope/telescope.nvim`
 require('telescope').setup{}
 require('telescope').load_extension('fzf')
@@ -592,11 +604,13 @@ au(auBin, "BufWritePost", "*.dat", function()
 	end
 end)
 
+--[[
 local auFormat = augroup("format")
 au(auFormat, "BufWritePre", {"*.cs", "*.go", "go.work", "go.mod"}, function(ev)
 	vim.lsp.buf.format({bufnr = ev.buf})
 end)
 au(auFormat, "BufWritePre", {"*.py"}, "Black")
+]]
 
 -- The Telegram codebase is full of stupidly long lines.
 local auWrap = augroup("wrap")
