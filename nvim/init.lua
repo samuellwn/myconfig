@@ -86,9 +86,10 @@ require('lazy').setup({
 	{ 'williamboman/mason-lspconfig.nvim', dependencies = { 'williamboman/mason.nvim' }},
 	-- { 'phpactor/phpactor', build = 'composer  install' },
 	'psf/black', -- opinionated python autofomatter
+	'terrastruct/d2-vim',
 
 	-- Git
-	--'tpope/vim-fugitive',
+	'tpope/vim-fugitive',
 	'rhysd/git-messenger.vim',
 	'junegunn/gv.vim',
 	'jreybert/vimagit',
@@ -251,7 +252,7 @@ local function cmpSelectPrevOrJump(fallback)
 end
 local function cmpClose(fallback)
 	if cmp.visible() then
-		cmp.close()
+		cmp.abort()
 	else
 		fallback()
 	end
@@ -324,7 +325,8 @@ local caps = require('cmp_nvim_lsp').default_capabilities()
 local lsp = require 'lspconfig'
 local servers = {
 	'gopls', 'fsautocomplete', 'ocamllsp', 'rust_analyzer',
-	'erlangls', 'phpactor', 'clangd', 'ols',
+	'erlangls', 'phpactor', 'clangd', 'ols', 'gdscript',
+	'zls', 'ruff',
 }
 for _, s in ipairs(servers) do
 	lsp[s].setup {capabilities = caps}
@@ -549,6 +551,35 @@ function au(group, event, pattern, cmd)
 	end
 end
 
+-- font size keybindings
+local font = "Fira Code"
+local font_size = 12
+
+function apply_font_size()
+	vim.o.guifont = font .. ":h" .. tostring(font_size) .. ":w12"
+end
+
+function reset_font_size()
+	font_size = 12
+	vim.notify("font size reset")
+	apply_font_size()
+end
+
+function inc_font_size()
+	font_size = font_size + 1
+	apply_font_size()
+end
+
+function dec_font_size()
+	font_size = font_size - 1
+	apply_font_size()
+end
+
+-- bind these keys in all modes
+map({'n', 'v', 'o', 'l', 't'}, '<C-=>', inc_font_size, {})
+map({'n', 'v', 'o', 'l', 't'}, '<C-->', dec_font_size, {})
+map({'n', 'v', 'o', 'l', 't'}, '<C-S-+>', reset_font_size, {})
+
 require('nvim-treesitter.configs').setup {
 	sync_install = false,
 	auto_install = true,
@@ -585,6 +616,10 @@ au(auLsp, "LspAttach", "*", function(args)
 	bufmap('i', '<C-c>', vim.lsp.buf.signature_help)
 	bufmap('n', ' C', vim.lsp.buf.rename)
 	bufmap('n', 'gl', vim.diagnostic.open_float)
+	local client = vim.lsp.get_client_by_id(args.data.client_id)
+	if client ~= nil and client.name == 'ruff' then
+		client.server_capabilities.hoverProvider = false
+	end
 end)
 
 local auBin = augroup("Binary")
