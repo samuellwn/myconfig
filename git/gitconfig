@@ -28,12 +28,12 @@
 	algorithm = histogram
 [merge]
 	tool = vimdiff
-[push]
-	recurseSubmodules = on-demand
 [mergetool "vimdiff"]
 	path = nvim
 [rerere]
 	enabled = true
+[submodules]
+	recurse = true
 
 # Grow a thicker skin. If you're this easily offended, there's something wrong
 # with you.
