@@ -335,25 +335,27 @@ local function get_python_path(workspace)
 		return path.join(vim.env.VIRTUAL_ENV, 'bin', 'python')
 	end
 
-	-- Find and use virtualenv in workspace directory.
-	for _, pattern in ipairs({'*', '.*'}) do
-		local match = vim.fn.glob(path.join(workspace, pattern, 'pyvenv.cfg'))
+	if not workspace == nil then
+		-- Find and use virtualenv in workspace directory.
+		for _, pattern in ipairs({'*', '.*'}) do
+			local match = vim.fn.glob(path.join(workspace, pattern, 'pyvenv.cfg'))
+			if match ~= '' then
+				return path.join(path.dirname(match), 'bin', 'python')
+			end
+		end
+
+		-- Use venv from poetry
+		local match = vim.fn.glob(path.join(workspace, 'pyproject.toml'))
 		if match ~= '' then
-			return path.join(path.dirname(match), 'bin', 'python')
+			local venv = vim.fn.trim(vim.fn.system(
+				'poetry --directory "' .. workspace .. '" env info -p'
+			))
+			return path.join(venv, 'bin', 'python')
 		end
 	end
 
-	-- Use venv from poetry
-	local match = vim.fn.glob(path.join(workspace, 'pyproject.toml'))
-	if match ~= '' then
-		local venv = vim.fn.trim(vim.fn.system(
-			'poetry --directory "' .. workspace .. '" env info -p'
-		))
-		return path.join(venv, 'bin', 'python')
-	end
-
 	-- Fallback to system Python
-	return exepath('python3') or exepath('python') or 'python'
+	return vim.fn.exepath('python3') or vim.fn.exepath('python') or 'python3' or 'python'
 end
 local caps = require('cmp_nvim_lsp').default_capabilities(
 	vim.lsp.protocol.make_client_capabilities()
@@ -375,7 +377,6 @@ local servers = {
 	pyright = {
 		capabilities = caps,
 		before_init = function(_, config)
-			vim.print(config)
 			config.settings.python.pythonPath = get_python_path(config.root_dir)
 		end,
 	},
