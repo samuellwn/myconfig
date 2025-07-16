@@ -82,8 +82,17 @@ require('lazy').setup({
 
 	-- Language support
 	'sebdah/vim-delve', 'sheerun/vim-polyglot',
-	{ 'neovim/nvim-lspconfig', dependencies = { 'williamboman/mason-lspconfig.nvim' }},
-	{ 'williamboman/mason-lspconfig.nvim', dependencies = { 'williamboman/mason.nvim' }},
+	{
+		'mason-org/mason-lspconfig.nvim',
+		opts = {
+			automatic_enable = false,
+			ensure_installed = { 'gopls', 'rust_analyzer', 'zls', 'pyright', 'ruff' },
+		},
+		dependencies = {
+			{ 'mason-org/mason.nvim', opts = {} },
+			'neovim/nvim-lspconfig',
+		},
+	},
 	-- { 'phpactor/phpactor', build = 'composer  install' },
 	'psf/black', -- opinionated python autofomatter
 	'terrastruct/d2-vim',
@@ -319,23 +328,19 @@ cmp.setup.cmdline(':', {
 		{ name = 'cmdline' }
 	})
 })
-require('mason').setup()
-require('mason-lspconfig').setup()
-local caps = require('cmp_nvim_lsp').default_capabilities()
-local lsp = require 'lspconfig'
-local servers = {
-	'gopls', 'fsautocomplete', 'ocamllsp', 'rust_analyzer',
-	'erlangls', 'phpactor', 'clangd', 'ols', 'gdscript',
-	'zls', 'ruff',
-}
-for _, s in ipairs(servers) do
-	lsp[s].setup {capabilities = caps}
-end
 local path = require('lspconfig/util').path
 local function get_python_path(workspace)
 	-- Use activated venv
 	if vim.env.VIRTUAL_ENV then
 		return path.join(vim.env.VIRTUAL_ENV, 'bin', 'python')
+	end
+
+	-- Find and use virtualenv in workspace directory.
+	for _, pattern in ipairs({'*', '.*'}) do
+		local match = vim.fn.glob(path.join(workspace, pattern, 'pyvenv.cfg'))
+		if match ~= '' then
+			return path.join(path.dirname(match), 'bin', 'python')
+		end
 	end
 
 	-- Use venv from poetry
@@ -347,83 +352,104 @@ local function get_python_path(workspace)
 		return path.join(venv, 'bin', 'python')
 	end
 
-	-- Find and use virtualenv in workspace directory.
-	for _, pattern in ipairs({'*', '.*'}) do
-		local match = vim.fn.glob(path.join(workspace, pattern, 'pyvenv.cfg'))
-		if match ~= '' then
-			return path.join(path.dirname(match), 'bin', 'python')
-		end
-	end
-
 	-- Fallback to system Python
 	return exepath('python3') or exepath('python') or 'python'
 end
-lsp.pyright.setup {
+local caps = require('cmp_nvim_lsp').default_capabilities(
+	vim.lsp.protocol.make_client_capabilities()
+)
+local lspdefaults = {
 	capabilities = caps,
-	before_init = function(_, config)
-		config.settings.python.pythonPath = get_python_path(config.root_dir)
-	end
 }
-lsp.omnisharp.setup {
-	capabilities = caps,
-	cmd = { "omnisharp" },
-	enable_import_completion = true,
-	-- Thanks, Microsoft, for requiring this stupidity
-	on_attach = function(client, _)
-		client.server_capabilities.semanticTokensProvider = {
-			full = vim.empty_dict(),
-			legend = {
-				tokenModifiers = { "static_symbol" },
-				tokenTypes = {
-					"comment", "excluded_code", "identifier",
-					"keyword", "keyword_control", "number",
-					"operator", "operator_overloaded",
-					"preprocessor_keyword", "string", "whitespace",
-					"text", "static_symbol", "preprocessor_text",
-					"punctuation", "string_verbatim",
-					"string_escape_character", "class_name",
-					"delegate_name", "enum_name", "interface_name",
-					"module_name", "struct_name",
-					"type_parameter_name", "field_name",
-					"enum_member_name", "constant_name",
-					"local_name", "parameter_name", "method_name",
-					"extension_method_name", "property_name",
-					"event_name", "namespace_name", "label_name",
-					"xml_doc_comment_attribute_name",
-					"xml_doc_comment_attribute_quotes",
-					"xml_doc_comment_attribute_value",
-					"xml_doc_comment_cdata_section",
-					"xml_doc_comment_comment",
-					"xml_doc_comment_delimiter",
-					"xml_doc_comment_entity_reference",
-					"xml_doc_comment_name",
-					"xml_doc_comment_processing_instruction",
-					"xml_doc_comment_text",
-					"xml_literal_attribute_name",
-					"xml_literal_attribute_quotes",
-					"xml_literal_attribute_value",
-					"xml_literal_cdata_section",
-					"xml_literal_comment", "xml_literal_delimiter",
-					"xml_literal_embedded_expression",
-					"xml_literal_entity_reference",
-					"xml_literal_name",
-					"xml_literal_processing_instruction",
-					"xml_literal_text", "regex_comment",
-					"regex_character_class", "regex_anchor",
-					"regex_quantifier", "regex_grouping",
-					"regex_alternation", "regex_text",
-					"regex_self_escaped_character",
-					"regex_other_escape",
+local servers = {
+	gopls = lspdefaults,
+	fsautocomplete = lspdefaults,
+	ocamllsp = lspdefaults,
+	rust_analyzer = lspdefaults,
+	erlangls = lspdefaults,
+	phpactor = lspdefaults,
+	clangd = lspdefaults,
+	ols = lspdefaults,
+	gdscript = lspdefaults,
+	zls = lspdefaults,
+	pyright = {
+		capabilities = caps,
+		before_init = function(_, config)
+			vim.print(config)
+			config.settings.python.pythonPath = get_python_path(config.root_dir)
+		end,
+	},
+	ruff = {
+		capabilities = caps,
+		before_init = function(_, config)
+			config.settings.interpreter = get_python_path(config.root_dir)
+		end,
+	},
+	omnisharp = {
+		capabilities = caps,
+		cmd = { "omnisharp" },
+		enable_import_completion = true,
+		-- Thanks, Microsoft, for requiring this stupidity
+		on_attach = function(client, _)
+			client.server_capabilities.semanticTokensProvider = {
+				full = vim.empty_dict(),
+				legend = {
+					tokenModifiers = { "static_symbol" },
+					tokenTypes = {
+						"comment", "excluded_code", "identifier",
+						"keyword", "keyword_control", "number",
+						"operator", "operator_overloaded",
+						"preprocessor_keyword", "string", "whitespace",
+						"text", "static_symbol", "preprocessor_text",
+						"punctuation", "string_verbatim",
+						"string_escape_character", "class_name",
+						"delegate_name", "enum_name", "interface_name",
+						"module_name", "struct_name",
+						"type_parameter_name", "field_name",
+						"enum_member_name", "constant_name",
+						"local_name", "parameter_name", "method_name",
+						"extension_method_name", "property_name",
+						"event_name", "namespace_name", "label_name",
+						"xml_doc_comment_attribute_name",
+						"xml_doc_comment_attribute_quotes",
+						"xml_doc_comment_attribute_value",
+						"xml_doc_comment_cdata_section",
+						"xml_doc_comment_comment",
+						"xml_doc_comment_delimiter",
+						"xml_doc_comment_entity_reference",
+						"xml_doc_comment_name",
+						"xml_doc_comment_processing_instruction",
+						"xml_doc_comment_text",
+						"xml_literal_attribute_name",
+						"xml_literal_attribute_quotes",
+						"xml_literal_attribute_value",
+						"xml_literal_cdata_section",
+						"xml_literal_comment", "xml_literal_delimiter",
+						"xml_literal_embedded_expression",
+						"xml_literal_entity_reference",
+						"xml_literal_name",
+						"xml_literal_processing_instruction",
+						"xml_literal_text", "regex_comment",
+						"regex_character_class", "regex_anchor",
+						"regex_quantifier", "regex_grouping",
+						"regex_alternation", "regex_text",
+						"regex_self_escaped_character",
+						"regex_other_escape",
+					},
 				},
-			},
-			range = true,
-		}
-	end,
+				range = true,
+			}
+		end,
+	},
+	hls = {
+		capabilities = caps,
+		filetypes = { 'haskell', 'lhaskell', 'cabal' },
+	},
 }
-lsp.hls.setup {
-	capabilities = caps,
-	filetypes = { 'haskell', 'lhaskell', 'cabal' },
-}
+for s, c in pairs(servers) do
+	vim.lsp.config(s, c)
+	vim.lsp.enable(s)
+end
 -- End setup for 'hrsh7th/nvim-cmp'
 -- Setup for 'stevearc/conform.nvim'
 require("conform").setup({
