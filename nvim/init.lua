@@ -628,6 +628,12 @@ vim.diagnostic.config {
 
 map('n', ' d', vim.diagnostic.goto_next, {})
 
+au(augroup("indent"), "FileType", "python", function(args)
+	vim.opt_local.cindent = false
+	vim.opt_local.smartindent = false
+	vim.opt_local.indentexpr = ""
+end)
+
 local auLsp = augroup("lsp")
 au(auLsp, "LspAttach", "*", function(args)
 	local bufmap = function(mode, lhs, rhs)
