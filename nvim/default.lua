@@ -1,6 +1,5 @@
 -- @!os:unix
--- @!user:dracowizard
--- @!install:644:$HOME/.config/nvim/colors/dracowizard.lua
+-- @!install:644:$HOME/.config/nvim/colors/default.lua
 
 local Highlite = require 'highlite' -- @type Highlite
 local Groups = require 'highlite.groups' -- @type highlite.Groups
@@ -116,7 +115,7 @@ local palette = Palette.derive(bg, {
 	warning     = calculate_color({  39, 0.90, 1.00}),
 	hint        = calculate_color({ 207, 1.00, 1.00}),
 	ok          = calculate_color({ 105, 0.80, 1.00}),
-	select      = calculate_color({   0, 0.00, 0.15}),
+	select      = calculate_color({   0, 0.00, 0.40}),
 
 	bg_contrast_low       = calculate_color({220, 0.1, 0.25}),
 	bg_contrast_high      = calculate_color({220, 0.1, 0.50}),

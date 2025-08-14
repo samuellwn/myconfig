@@ -47,7 +47,7 @@ g.ale_disable_lsp = 1
 g.ale_sign_column_always = 1
 g.ale_linters_ignore = { 'mcs', 'mcsc', 'csc' }
 g.OmniSharp_server_use_net6 = 1
-g.instant_username = 'dracowizard'
+g.instant_username = vim.env.USER
 
 g.suda_smart_edit = 1
 
@@ -174,7 +174,18 @@ require('lazy').setup({
 require('highlite').setup()
 -- End setup for 'Iron-E/nvim-highlite'
 
-cmd('colorscheme dracowizard')
+-- This checks if a color scheme that matches your username exists.
+-- If it doesn't exist, it uses a default scheme instead.
+
+local username = vim.env.USER
+local colors_dir = vim.fn.stdpath('config') .. '/colors/'
+local colorscheme_file = colors_dir .. username .. '.lua'
+
+if vim.fn.filereadable(colorscheme_file) == 1 then
+	vim.cmd('colorscheme ' .. username)
+else
+	vim.cmd('colorscheme default')
+end
 
 -- cmd('colorscheme asmanian-blood')
 -- colorscheme ayu

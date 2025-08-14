@@ -1,4 +1,5 @@
 -- @!os:unix
+-- @!user:josh
 -- @!install:644:$HOME/.config/nvim/colors/josh.lua
 
 local Highlite = require 'highlite' -- @type Highlite

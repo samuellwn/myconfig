@@ -1,0 +1,5 @@
+v1.1:	2025-08-13
+
+	Added "hardlink" option to create hard links
+	suitable for splattering a .zprofile to cover
+	.zshrc, .bashrc, etc. too

@@ -1,0 +1,58 @@
+# @!os:unix
+# @!user:josh
+# @!install:644:$HOME/.gitconfig
+[credential]
+	helper = cache
+[commit]
+	gpgsign = true
+[user]
+	signingkey = 4964BBAEEC271C7E
+	name = Josh Rodd
+	email = josh@rodd.us
+[color]
+	ui = true
+[pull]
+	rebase = true
+[rebase]
+	autosquash = true
+[cola]
+	safemode = false
+	blameviewer = git gui blame
+	theme = flat-dark-red
+	startupmode = list
+[gui]
+	editor = nvim
+	historybrowser = gitk
+[diff]
+	tool = vimdiff
+	algorithm = histogram
+[merge]
+	tool = vimdiff
+[mergetool "vimdiff"]
+	path = nvim
+[rerere]
+	enabled = true
+[submodule]
+	recurse = true
+
+
+
+[init]
+	defaultBranch = master
+
+
+
+
+
+
+[url "git@gitlab.com:marcomandrodd"]
+	insteadOf = https://gitlab.com/marcomandrodd
+[url "git@gitlab.com:sctllc"]
+	insteadOf = https://gitlab.com/sctllc
+[url "git@gitlab.com:JoshRodd/ecore"]
+	insteadOf = https://gitlab.com/JoshRodd/ecore
+
+# Avoid ownership problems when building on roosh
+[safe]
+	directory = /opt/sctllc/sb/simplebooks
+	directory = /home/josh/src/sfi
