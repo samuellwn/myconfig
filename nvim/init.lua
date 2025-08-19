@@ -78,7 +78,27 @@ require('lazy').setup({
 		},
 	},
 	'andythigpen/nvim-coverage', -- Test coverage in gutter
-	'stevearc/conform.nvim', -- Autoformat
+	{
+		'stevearc/conform.nvim',
+		opts = {
+			formatters_by_ft = {
+				python = { "ruff_format" },
+			},
+			format_on_save = function(bufnr)
+				-- Skip format on save if the current buffer has errors
+				local diag = vim.diagnostic
+				local errors = diag.get(bufnr, { severity = diag.severity.ERROR })
+				if #errors > 0 then
+					return nil
+				end
+
+				return {
+					timeout_ms = 500,
+					lsp_format = "fallback",
+				}
+			end,
+		},
+	},
 	--'mfussenegger/nvim-dap', -- Browser debugger connection
 
 	-- Language support
@@ -471,17 +491,6 @@ for s, c in pairs(servers) do
 	vim.lsp.enable(s)
 end
 -- End setup for 'hrsh7th/nvim-cmp'
--- Setup for 'stevearc/conform.nvim'
-require("conform").setup({
-	formatters_by_ft = {
-		python = { "ruff_format" },
-	},
-	format_on_save = {
-		timeout_ms = 500,
-		lsp_format = "fallback",
-	},
-})
--- End setup for 'stevearc/conform.nvim'
 -- Setup for 'nvim-telescope/telescope.nvim`
 require('telescope').setup{}
 require('telescope').load_extension('fzf')
