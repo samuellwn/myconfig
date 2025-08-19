@@ -79,6 +79,7 @@ require('lazy').setup({
 	},
 	'andythigpen/nvim-coverage', -- Test coverage in gutter
 	'stevearc/conform.nvim', -- Autoformat
+	--'mfussenegger/nvim-dap', -- Browser debugger connection
 
 	-- Language support
 	'sebdah/vim-delve', 'sheerun/vim-polyglot',
@@ -385,6 +386,13 @@ local servers = {
 	ols = lspdefaults,
 	gdscript = lspdefaults,
 	zls = lspdefaults,
+	yamlls = lspdefaults,
+	systemd_ls = lspdefaults,
+	jsonls = lspdefaults,
+	jsonnet_ls = lspdefaults,
+	jqls = lspdefaults,
+	html = lspdefaults,
+	ts_ls = lspdefaults,
 	pyright = {
 		capabilities = caps,
 		before_init = function(_, config)
