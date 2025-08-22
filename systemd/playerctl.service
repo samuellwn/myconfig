@@ -1,0 +1,13 @@
+# @!os:linux
+# @!user:dracowizard
+# @!install:644:$HOME/.config/systemd/user/playerctl.service
+
+[Unit]
+Description=playerctld
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/playerctld daemon
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,10 @@
+# @!os:linux
+# @!user:dracowizard
+# @!install:644:$HOME/.config/systemd/user
+
+[Unit]
+Description=Hyprland tiling Wayland compositor services
+Requires=graphical-session.target
+After=graphical-session.target
+Wants=wireplumber.service playerctl.service hypridle.service hyprpolkitagent.service quickshell.service mako.service
+#Wants=wayvnc.service

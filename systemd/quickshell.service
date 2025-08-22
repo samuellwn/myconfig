@@ -1,0 +1,13 @@
+# @!os:linux
+# @!user:dracowizard
+# @!install:644:$HOME/.config/systemd/user/quickshell.service
+
+[Unit]
+Description=Quickshell
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecCondition=/bin/sh -c '[ -n "$WAYLAND_DISPLAY" ]'
+ExecStart=/usr/bin/quickshell
