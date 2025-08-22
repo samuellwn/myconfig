@@ -1,0 +1,25 @@
+# @!os:linux
+# @!user:dracowizard
+# @!install:644:$HOME/.config/clangd/config.yaml
+
+CompileFlags:
+  Add: -D__CLANGD_IN_EDITOR__
+Diagnostics:
+  UnusedIncludes: Strict
+  MissingIncludes: Strict
+---
+IF:
+  PathMatch: ~/Projects/qmk_firmware/.*
+CompileFlags:
+  Add: "-DPROGMEM= "
+Diagnostics:
+  UnusedIncludes: None
+  MissingIncludes: None
+---
+IF:
+  PathMatch: ~/src/qmk_firmware/.*
+CompileFlags:
+  Add: "-DPROGMEM= "
+Diagnostics:
+  UnusedIncludes: None
+  MissingIncludes: None
