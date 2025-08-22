@@ -12,5 +12,5 @@ export QT_WAYLAND_DISABLE_WINDOWDECORATIONS=1
 export _JAVA_AWT_WM_NONREPARENTING=1
 
 if [[ $(hostname) == dragonfire ]]; then
-	export AQ_DRM_DEVICES="/dev/dri/by-path/pci-0000:00:02.0-card:/dev/dri/by-path/pci-0000:01:00.0-card"
+	export AQ_DRM_DEVICES="/dev/dri/igpu:/dev/dri/dgpu"
 fi
