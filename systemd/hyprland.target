@@ -1,6 +1,6 @@
 # @!os:linux
 # @!user:dracowizard
-# @!install:644:$HOME/.config/systemd/user
+# @!install:644:$HOME/.config/systemd/user/hyprland.target
 
 [Unit]
 Description=Hyprland tiling Wayland compositor services
