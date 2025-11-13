@@ -107,7 +107,11 @@ require('lazy').setup({
 		'mason-org/mason-lspconfig.nvim',
 		opts = {
 			automatic_enable = false,
-			ensure_installed = { 'gopls', 'rust_analyzer', 'zls', 'pyright', 'ruff' },
+			ensure_installed = {
+				'gopls', 'rust_analyzer', 'zls', 'pyright', 'ruff',
+				'ts_ls', 'yamlls', 'jsonls', 'jsonnet_ls', 'jqls',
+				'html', 'clangd', 'qmlls', 'systemd_ls',
+			},
 		},
 		dependencies = {
 			{ 'mason-org/mason.nvim', opts = {} },
@@ -638,6 +642,15 @@ map({'n', 'v', 'o', 'l', 't'}, '<C-S-+>', reset_font_size, {})
 require('nvim-treesitter.configs').setup {
 	sync_install = false,
 	auto_install = true,
+	ensure_installed = {
+		"cpp", "css", "csv", "desktop", "awk", "bash", "cmake",
+		"git_config", "git_rebase", "gitattributes", "gitcommit",
+		"gitignore", "gdscript", "gdshader", "godot_resource",
+		"go", "gomod", "gosum", "gotmpl", "gowork",
+		"hyprlang", "http", "http", "javascript", "typescript",
+		"jq", "json", "jsonnet", "ledger", "qmljs", "python",
+		"markdown", "nginx", "zig", "yaml", "c"
+	},
 	highlight = {
 		enable = true,
 	},

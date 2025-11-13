@@ -156,6 +156,7 @@ unset SSH_AGENT_PID
 if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
         export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 fi
+export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
 
 # Local path
 if [[ -d $HOME/.local ]]; then
