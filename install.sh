@@ -74,3 +74,8 @@ find . -path ./.git -prune -o -type f \! -name install.sh -print | while read sr
 	done
 done
 
+
+# Sometimes Hyprland doesn't reload config properly
+if command -v hyprctl >/dev/null; then
+	hyprctl reload &>/dev/null || true
+fi
