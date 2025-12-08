@@ -136,9 +136,11 @@ if which w3m >/dev/null; then export BROWSER=/usr/bin/w3m; fi
 #export LC_ALL=en_US.UTF-8
 #export LC_CTYPE=en_US.UTF-8
 #export LC_COLLATE=en_US.UTF-8
+#
 
+export ZVM_INSTALL="$HOME/.zvm/self"
 export ASDF_DATA_DIR="$HOME/.asdf"
-export PATH="$HOME/.local/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/.ghcup/bin:$HOME/.cabal/bin:$ASDF_DATA_DIR/shims:$PATH"
+export PATH="$HOME/.local/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/.ghcup/bin:$HOME/.cabal/bin:$ASDF_DATA_DIR/shims:$HOME/.zvm/bin:$ZVM_INSTALL/:$PATH"
 
 if [[ -z $__loaded__nvm ]]; then
 	__loaded__nvm=yes
