@@ -51,6 +51,27 @@ g.instant_username = vim.env.USER
 
 g.suda_smart_edit = 1
 
+local autocmd = vim.api.nvim_create_autocmd
+
+function augroup(name)
+	return vim.api.nvim_create_augroup(name, {clear = true})
+end
+
+function aug(group, event, pattern, cmd)
+	if type(cmd) == "function" then
+		autocmd(event, {group = group, pattern = pattern, callback = cmd})
+	else
+		autocmd(event, {group = group, pattern = pattern, command = cmd})
+	end
+end
+
+local augroup_init_lua = augroup("init.lua")
+
+function au(event, pattern, cmd)
+	aug(augroup_init_lua, event, pattern, cmd)
+end
+
+
 cmd('set diffopt-=filler')
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -410,7 +431,28 @@ local servers = {
 	ols = lspdefaults,
 	gdscript = lspdefaults,
 	zls = lspdefaults,
-	yamlls = lspdefaults,
+	yamlls = {
+		capabilities = caps,
+		settings = {
+			yaml = {
+				customTags = {
+					"!Condition sequence",
+					"!Context scalar",
+					"!Enumerate sequence",
+					"!Env scalar",
+					"!File scalar",
+					"!File sequence",
+					"!Find sequence",
+					"!Format sequence",
+					"!If sequence",
+					"!Index scalar",
+					"!KeyOf scalar",
+					"!Value scalar",
+					"!AtIndex scalar",
+				},
+			}
+		}
+	},
 	systemd_ls = lspdefaults,
 	jsonls = lspdefaults,
 	jsonnet_ls = lspdefaults,
@@ -500,6 +542,21 @@ require('telescope').setup{}
 require('telescope').load_extension('fzf')
 -- End setup for 'nvim-telescope/telescope.nvim`
 -- Setup for 'Shatur/neovim-session-manager'
+local AutoloadMode = require('session_manager.config').AutoloadMode
+require('session_manager').setup{
+	autoload_mode = { AutoloadMode.CurrentDir, AutoloadMode.GitSession, AutoloadMode.LastSession },
+	autosave_only_in_session = true,
+}
+au("BufWritePre", "*", function()
+	for _, buf in ipairs(vim.api.nvim_list_bugs()) do
+		if vim.api.nvim_get_option_value("buftype", { buf = buf }) == 'nofile' then
+			return
+		end
+	end
+	if require('session_manager.utils').exists_in_session() then
+		require('session_manager').save_current_session()
+	end
+end)
 map('n', ' e', '<cmd>SessionManager load_session<cr>', { noremap = true })
 -- End setup for 'Shatur/neovim-session-manager'
 -- Setup for 'nvim-lualine/lualine.nvim'
@@ -596,20 +653,6 @@ map('n', ' cL', function() cov.load_lcov(".lcov", true) end, {})
 map('n', ' ct', cov.toggle, {})
 -- End setup for 'andythigpen/nvim-coverage'
 
-local autocmd = vim.api.nvim_create_autocmd
-
-function augroup(name)
-	return vim.api.nvim_create_augroup(name, {clear = true})
-end
-
-function au(group, event, pattern, cmd)
-	if type(cmd) == "function" then
-		autocmd(event, {group = group, pattern = pattern, callback = cmd})
-	else
-		autocmd(event, {group = group, pattern = pattern, command = cmd})
-	end
-end
-
 -- font size keybindings
 local font = "Fira Code"
 local font_size = 12
@@ -669,14 +712,14 @@ vim.diagnostic.config {
 
 map('n', ' d', vim.diagnostic.goto_next, {})
 
-au(augroup("indent"), "FileType", "python", function(args)
+aug(augroup("indent"), "FileType", "python", function(args)
 	vim.opt_local.cindent = false
 	vim.opt_local.smartindent = false
 	vim.opt_local.indentexpr = ""
 end)
 
 local auLsp = augroup("lsp")
-au(auLsp, "LspAttach", "*", function(args)
+aug(auLsp, "LspAttach", "*", function(args)
 	local bufmap = function(mode, lhs, rhs)
 		vim.keymap.set(mode, lhs, rhs, {buffer = true})
 	end
@@ -697,21 +740,21 @@ au(auLsp, "LspAttach", "*", function(args)
 end)
 
 local auBin = augroup("Binary")
-au(auBin, "BufReadPre", "*.dat", function()
+aug(auBin, "BufReadPre", "*.dat", function()
 	vim.b.bin = 1
 end)
-au(auBin, "BufReadPost", "*.dat", function()
+aug(auBin, "BufReadPost", "*.dat", function()
 	if vim.b.bin == 1 then
 		cmd([[%!xxd]])
 		vim.b.filetype = "xxd"
 	end
 end)
-au(auBin, "BufWritePre", "*.dat", function()
+aug(auBin, "BufWritePre", "*.dat", function()
 	if vim.b.bin == 1 then
 		cmd([[%!xxd -r]])
 	end
 end)
-au(auBin, "BufWritePost", "*.dat", function()
+aug(auBin, "BufWritePost", "*.dat", function()
 	if vim.b.bin == 1 then
 		cmd([[%!xxd]])
 		vim.b.nomod = true
@@ -720,15 +763,15 @@ end)
 
 --[[
 local auFormat = augroup("format")
-au(auFormat, "BufWritePre", {"*.cs", "*.go", "go.work", "go.mod"}, function(ev)
+aug(auFormat, "BufWritePre", {"*.cs", "*.go", "go.work", "go.mod"}, function(ev)
 	vim.lsp.buf.format({bufnr = ev.buf})
 end)
-au(auFormat, "BufWritePre", {"*.py"}, "Black")
+aug(auFormat, "BufWritePre", {"*.py"}, "Black")
 ]]
 
 -- The Telegram codebase is full of stupidly long lines.
 local auWrap = augroup("wrap")
-au(auWrap, {"BufEnter", "BufFilePost"}, {"*.swift", "*.m "}, function()
+aug(auWrap, {"BufEnter", "BufFilePost"}, {"*.swift", "*.m "}, function()
 	vim.b.wrap = true
 end)
 
@@ -737,7 +780,7 @@ function indent(width, expand, ...)
 	if expand == nil then
 		expand = false
 	end
-	au(auIndent, {"BufEnter", "BufFilePost"}, ..., function()
+	aug(auIndent, {"BufEnter", "BufFilePost"}, ..., function()
 		vim.b.shiftwidth = width
 		vim.b.tabstop = width
 		vim.b.expandtab = expand
@@ -758,9 +801,9 @@ indent(4, false, "*")
 indent(8, false, "*.txt")
 ]]
 
-au(augroup("resize"), "VimResized", "*", "wincmd =")
+au("VimResized", "*", "wincmd =")
 
-au(augroup("filetypes"), {"BufRead", "BufNewFile"}, {"*.hcl", "*.hcldec"}, "set filetype=hcl")
+au({"BufRead", "BufNewFile"}, {"*.hcl", "*.hcldec"}, "set filetype=hcl")
 
 -- cmd([[
 -- 	augroup filetypes

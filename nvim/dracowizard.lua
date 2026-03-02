@@ -172,7 +172,7 @@ groups.ColorColumn   = {bg = calculate_color({0, 0.0, 0.07})}
 groups.PMenuSel      = {bg = calculate_color({0, 0.0, 0.07})}
 groups["@exception"] = {fg = palette.exception}
 
-groups["@operator"] = Groups.extend({italic = true, bold = false}, groups '@operator')
+groups["@operator"] = Groups.extend({italic = false, bold = false}, groups '@operator')
 
 groups.Error = {bg = calculate_color({colors.red, 0.9, 0.2})}
 groups.ExtraWhitespace = 'Error'

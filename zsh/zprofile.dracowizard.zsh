@@ -146,8 +146,12 @@ if [[ -z $__loaded__nvm ]]; then
 	__loaded__nvm=yes
 	# TODO: add other paths for this
 	if [[ -e /usr/share/nvm/init-nvm.sh ]]; then
+			_PREFIX=$PREFIX
+			unset PREFIX
 			export NVM_DIR="$HOME/.local/share/nvm"
 			source /usr/share/nvm/init-nvm.sh
+			export PREFIX=$_PREFIX
+			unset _PREFIX
 	fi
 fi
 
