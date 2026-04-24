@@ -3,8 +3,10 @@
 // @ !install:644:$HOME/.config/quickshell/shell.qml
 import Quickshell
 import Quickshell.Io
+import Quickshell.Widgets
 import Quickshell.Services.Notifications
 import QtQuick
+import QtQuick.Layouts
 import QtQml
 
 ShellRoot {
@@ -31,16 +33,68 @@ ShellRoot {
 			}
 
 			PopupWindow {
-				visible: notifShowing.length > 0
+				visible: notifOnScreen.count > 0
 				anchor.window: parent
 				anchor.edges: Edges.Bottom | Edges.right
 				anchor.gravity: Edges.Bottom | Edges.right
 				screen: parent.screen
 
 				ListView {
-					model: notifShowing
-					delegate: Rectangle {
-						width: 250
+					model: notifOnScreen
+					delegate: notifOnScreenDelegate
+				}
+			}
+		}
+	}
+
+	Component {
+		id: notifOnScreenDelegate
+		required property string appName
+		required property string body
+		required property string image
+		required property string appIcon
+		imageSource: image != "" ? image : appIcon
+
+		Rectangle {
+			width: 250
+
+			Row {
+				anchors.horizontalCenter: parent.horizontalCenter
+				anchors.verticalCenter: parent.verticalCenter
+
+				spacing: 5
+
+				IconImage {
+					visible: imageSource != ""
+					source: imageSource
+					height: 65
+					width: 65
+				}
+
+				Column {
+					width: 170
+					spacing: 5
+
+					Text {
+						width: 160
+
+						anchors.horizontalCenter: parent.horizontalCenter
+
+						text: appName
+
+						font.pixelSize: 20
+						horizontalAlignment: Text.AlignHCenter
+						elide: Text.ElideRight
+					}
+
+					Text {
+						width: 160
+
+						anchors.horizontalCenter: parent.horizontalCenter
+
+						text: body
+
+						font.pixelSize: 16
 					}
 				}
 			}
@@ -71,12 +125,41 @@ ShellRoot {
 		})
 	}
 
-	property var notifHist: []
-	property var notifShowing: []
+	/*
+	component NotifModel : QtObject {
+		property bool visible
+		property alias expireTimeout: notif.expireTimeout
+		property alias summary: notif.summary
+		property alias tracked: notif.tracked
+		property alias desktopEntry: notif.desktopEntry
+		property alias hasInlineReply: notif.hasInlineReply
+		property alias hints: notif.hints
+		property alias X: notif.X
+		property alias X: notif.X
+		property alias X: notif.X
+		property alias notifId: notif.id
+		property alias X: notif.X
+		property alias X: notif.X
+		property alias X: notif.X
+		property alias X: notif.X
+		property alias X: notif.X
+		property alias X: notif.X
+		property alias X: notif.X
+		property alias X: notif.X
+		default property Notification notif
+	}
+	*/
+
+	ObjectModel {
+		id: notifOnScreen
+	}
+	ObjectModel {
+		id: allNotif
+	}
 
 	function handleNotifClosed(closed) {
-		notifHist = notifHist.filter(notif => notif.id != closed.id);
-		notifShowing = notifShowing.filter(notif => notif.id != closed.id);
+		notifOnScreen.remove(notifOnScreen.indexOf(notification), 1);
+		allNotif.remove(allNotif.indexOf(notification), 1);
 	}
 
 	NotificationServer {
@@ -95,17 +178,15 @@ ShellRoot {
 			}
 
 			notification.closed.connect(handleNotifClosed);
-			if (notification.lastGeneration) {
-				notifHist.push(notification)
-			} else {
-				notifShowing.push(notification)
+
+			allNotif.append(notification);
+			if (!notification.lastGeneration) {
+				notifOnScreen.append(notification);
 			}
 
-			let timeout = notification.expireTimeout
-			if (timeout = -1) {
-				if (notification.urgency == NotificationUrgency.Critical) {
-					timeout = 0
-				} else if (notification.urgency == NotificationUrgency.Normal) {
+			let timeout = 0
+			if (notification.expireTimeout == -1) {
+				if (notification.urgency == NotificationUrgency.Normal) {
 					timeout = 30
 				} else if (notification.urgency == NotificationUrgency.Low) {
 					timeout = 5
@@ -113,7 +194,7 @@ ShellRoot {
 			}
 			if (timeout > 0) {
 				after(timeout * 1000, () => {
-					notification.expire();
+					notifOnScreen.remove(notifOnScreen.indexOf(notification), 1);
 				});
 			}
 		}

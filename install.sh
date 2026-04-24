@@ -17,6 +17,8 @@ if [[ $this_user == "sam" ]]; then this_user=dracowizard; fi
 # Handle hostnames that have the domain part specified
 this_host=$(printf "%s\n" $HOST | cut -d. -f1)
 
+dirmodes=()
+
 last_installed=""
 find . -path ./.git -prune -o -type f \! -name install.sh -print | while read src; do
 	zshexpn=no
@@ -40,6 +42,13 @@ find . -path ./.git -prune -o -type f \! -name install.sh -print | while read sr
 			continue
 		fi
 		case $cmd[1] in
+			dirmode)
+				if [[ ! ${dirmodes[(i)${cmd[2]}:${(e)cmd[3]}]} -le ${#dirmodes} ]]; then
+					install -d -m ${cmd[2]} ${(e)cmd[3]}
+					echo "dirmode ${cmd[2]} ${(e)cmd[3]}"
+					dirmodes+=(${cmd[2]}:${(e)cmd[3]})
+				fi
+				;;
 			install)
 				dst=${(e)cmd[3]}
 				instsrc=$src
@@ -50,9 +59,11 @@ find . -path ./.git -prune -o -type f \! -name install.sh -print | while read sr
 					instsrc=$file
 				fi
 
-				install -d -m 755 $(dirname $dst)
+				if [[ ! -d $(dirname $dst) ]]; then
+					install -d -m 755 $(dirname $dst)
+				fi
 				install -m ${cmd[2]} $instsrc $dst
-				echo "$src -> $dst"
+				echo "install $src -> $dst"
 				last_installed=$dst
 				;;
 			hardlink)
@@ -63,7 +74,7 @@ find . -path ./.git -prune -o -type f \! -name install.sh -print | while read sr
 				src=$last_installed
 				dst=${(e)cmd[2]}
 				ln $src $dst
-				echo "$src -> $dst (hard link)"
+				echo "hardlink $src -> $dst"
 				;;
 			postexec)
 				# uncomment once i'm sure this does the right thing

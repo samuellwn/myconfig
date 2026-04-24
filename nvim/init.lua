@@ -2,7 +2,7 @@
 -- @!install:644:$HOME/.config/nvim/init.lua
 --[===[ ]===]
 local o, bo, wo, g = vim.o, vim.bo, vim.wo, vim.g
-local b, api = vim.b, vim.api, vim.api.nvim_set_keymap
+local b, api = vim.b, vim.api
 
 cmd, map = vim.cmd, vim.keymap.set
 
@@ -131,7 +131,7 @@ require('lazy').setup({
 			ensure_installed = {
 				'gopls', 'rust_analyzer', 'zls', 'pyright', 'ruff',
 				'ts_ls', 'yamlls', 'jsonls', 'jsonnet_ls', 'jqls',
-				'html', 'clangd', 'qmlls', 'systemd_ls',
+				'html', 'clangd', 'qmlls', 'systemd_lsp',
 			},
 		},
 		dependencies = {
@@ -367,8 +367,6 @@ cmp.setup {
 	sources = cmp.config.sources({
 		{ name = 'nvim_lsp' },
 		--{ name = 'luasnip' },
-	}, {
-		{ name = 'buffer' },
 	}),
 }
 cmp.setup.cmdline({ '/', '?' }, {
@@ -453,7 +451,7 @@ local servers = {
 			}
 		}
 	},
-	systemd_ls = lspdefaults,
+	systemd_lsp = lspdefaults,
 	jsonls = lspdefaults,
 	jsonnet_ls = lspdefaults,
 	jqls = lspdefaults,
@@ -548,7 +546,7 @@ require('session_manager').setup{
 	autosave_only_in_session = true,
 }
 au("BufWritePre", "*", function()
-	for _, buf in ipairs(vim.api.nvim_list_bugs()) do
+	for _, buf in ipairs(vim.api.nvim_list_bufs()) do
 		if vim.api.nvim_get_option_value("buftype", { buf = buf }) == 'nofile' then
 			return
 		end
@@ -653,34 +651,6 @@ map('n', ' cL', function() cov.load_lcov(".lcov", true) end, {})
 map('n', ' ct', cov.toggle, {})
 -- End setup for 'andythigpen/nvim-coverage'
 
--- font size keybindings
-local font = "Fira Code"
-local font_size = 12
-
-function apply_font_size()
-	vim.o.guifont = font .. ":h" .. tostring(font_size) .. ":w12"
-end
-
-function reset_font_size()
-	font_size = 12
-	vim.notify("font size reset")
-	apply_font_size()
-end
-
-function inc_font_size()
-	font_size = font_size + 1
-	apply_font_size()
-end
-
-function dec_font_size()
-	font_size = font_size - 1
-	apply_font_size()
-end
-
--- bind these keys in all modes
-map({'n', 'v', 'o', 'l', 't'}, '<C-=>', inc_font_size, {})
-map({'n', 'v', 'o', 'l', 't'}, '<C-->', dec_font_size, {})
-map({'n', 'v', 'o', 'l', 't'}, '<C-S-+>', reset_font_size, {})
 
 require('nvim-treesitter.configs').setup {
 	sync_install = false,
@@ -846,19 +816,47 @@ map('n', '<Leader>t', '<cmd>lua ledger_insert_transaction_ids()<cr>', { noremap 
 
 map('t', '<c-space>', '<C-\\>', { noremap = true })
 
--- g.ayucolor = "dark"
--- g.ayu_extended_palette = 1
---[=[
-cmd([[
-	function! MyColors() abort
-		highlight Pmenu ctermfg=15 ctermbg=7 guibg=#050505
-		highlight PmenuSel ctermfg=15 ctermbg=5 guibg=#151515
-	endfunction
+-- Neovim GUI things
+-- =================
 
-	augroup MyColors
-		autocmd!
-		autocmd ColorScheme * call MyColors()
-	augroup END
-]])
-]=]
--- ]===]
+local font = "Fira Code"
+local font_size = 9
+local font_weight = 12
+
+if g.neovide then
+	font_size = 12
+end
+
+function apply_font_size()
+	local font_str = font .. ":h" .. tostring(font_size)
+	if not g.neovide then
+		font_str = font_str .. ":w" .. tostring(font_weight)
+	end
+	vim.o.guifont = font_str
+end
+
+function reset_font_size()
+	font_size = 9
+	vim.notify("font size reset")
+	apply_font_size()
+end
+
+function inc_font_size()
+	font_size = font_size + 1
+	apply_font_size()
+end
+
+function dec_font_size()
+	font_size = font_size - 1
+	apply_font_size()
+end
+
+apply_font_size()
+
+-- bind these keys in all modes
+map({'n', 'v', 'o', 'l', 't'}, '<C-=>', inc_font_size, {})
+map({'n', 'v', 'o', 'l', 't'}, '<C-->', dec_font_size, {})
+map({'n', 'v', 'o', 'l', 't'}, '<C-S-+>', reset_font_size, {})
+
+
+g.neovide_cursor_vfx_mode = "railgun"
