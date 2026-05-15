@@ -123,7 +123,7 @@ require('lazy').setup({
 	--'mfussenegger/nvim-dap', -- Browser debugger connection
 
 	-- Language support
-	'sebdah/vim-delve', 'sheerun/vim-polyglot',
+	'sebdah/vim-delve', -- 'sheerun/vim-polyglot',
 	{
 		'mason-org/mason-lspconfig.nvim',
 		opts = {
@@ -166,7 +166,7 @@ require('lazy').setup({
 
 	-- Navigation
 	{ 'vimwiki/vimwiki', disable = true },
-	{ 'phaazon/hop.nvim', branch = 'v2' },
+	'wsdjeg/hop.nvim',
 	'christoomey/vim-tmux-navigator',
 	'ds26gte/info.vim',
 	'andymass/vim-tradewinds',
@@ -185,7 +185,25 @@ require('lazy').setup({
 --	'neovim/nvim-lspconfig', 'ap/vim-buftabline'
 	{ 'junegunn/fzf', build = function() vim.fn['fzf#install']() end },
 	{ 'junegunn/fzf.vim', dependencies = 'fzf' },
-	{ 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
+	{
+		'nvim-treesitter/nvim-treesitter',
+		build = ':TSUpdate',
+		opts = {
+			sync_install = false,
+			auto_install = true,
+			ensure_installed = {
+				"cpp", "css", "csv", "desktop", "awk", "bash", "cmake",
+				"git_config", "git_rebase", "gitattributes", "gitcommit",
+				"gitignore", "gdscript", "gdshader", "godot_resource",
+				"go", "gomod", "gosum", "gotmpl", "gowork",
+				"hyprlang", "http", "http", "javascript", "typescript",
+				"jq", "json", "jsonnet", "ledger", "qmljs", "python",
+				"markdown", "nginx", "zig", "yaml", "c"
+			},
+			highlight = { enable = true },
+			indent = { enable = { "bash" } },
+		},
+	},
 	'lambdalisue/suda.vim',
 --	use { 'antoinemadec/coc-fzf', branch = 'release', after = { 'fzf', 'fzf.vim' } }
 
@@ -652,25 +670,7 @@ map('n', ' ct', cov.toggle, {})
 -- End setup for 'andythigpen/nvim-coverage'
 
 
-require('nvim-treesitter.configs').setup {
-	sync_install = false,
-	auto_install = true,
-	ensure_installed = {
-		"cpp", "css", "csv", "desktop", "awk", "bash", "cmake",
-		"git_config", "git_rebase", "gitattributes", "gitcommit",
-		"gitignore", "gdscript", "gdshader", "godot_resource",
-		"go", "gomod", "gosum", "gotmpl", "gowork",
-		"hyprlang", "http", "http", "javascript", "typescript",
-		"jq", "json", "jsonnet", "ledger", "qmljs", "python",
-		"markdown", "nginx", "zig", "yaml", "c"
-	},
-	highlight = {
-		enable = true,
-	},
-	indent = {
-		enable = { "bash" },
-	},
-}
+
 
 vim.diagnostic.config {
 	virtual_text = {
