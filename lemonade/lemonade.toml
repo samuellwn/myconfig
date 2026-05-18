@@ -1,0 +1,7 @@
+# @x install,expand:$HOME/.config/lemonade.toml:644:unix:dracowizard
+
+port = $((10000 + $(id -u)))
+allow = '127.0.0.1/8'
+client = '172.0.0.1'
+trans-loopback = true
+trans-localfile = true

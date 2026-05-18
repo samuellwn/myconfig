@@ -1,0 +1,13 @@
+# @X install,expand:$HOME/.config/systemd/user/lemonade.service:644:linux:dracowizard
+# @X postexec:linux:dracowizard:systemctl --user daemon-reload
+# @X postexec:linux:dracowizard:systemctl --user enable --now lemonade.service
+
+[Unit]
+Description=Lemonade clipboard server
+
+[Service]
+Type=simple
+ExecStart=$(go env GOPATH)/bin/lemonade server
+
+[Install]
+WantedBy=default.target

@@ -25,9 +25,9 @@ Supported directives (all use the `@!directive:arg` format):
 To temporarily disable an annotation, add a space: `@ !os:linux` or
 change the sigil: `@x`.  The regex won't match either form.
 Current disabled files:
-  - quickshell/shell.qml    (uses @ ! — not ready to install)
-  - lemonade.toml           (uses @x — disabled)
-  - lemonade.service        (uses @X — disabled)
+  - quickshell/shell.qml      (uses @ ! — not ready to install)
+  - lemonade/lemonade.toml    (uses @x — currently unused)
+  - lemonade/lemonade.service (uses @X — currently unused)
 
 ## Known quirks
 
@@ -43,4 +43,3 @@ Current disabled files:
 
 - Origin: git@github.com:samuellwn/myconfig.git
 - Branch: master
-- No .gitignore exists — tracked/untracked files coexist.
