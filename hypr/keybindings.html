@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Hyprland Keybindings Cheat Sheet</title>
+	<style>
+		:root {
+			--bg: #0d0d0d;
+			--surface: #1a1a1a;
+			--border: #2a2a2a;
+			--text: #ddd;
+			--muted: #888;
+			--accent: #00ccff;
+			--key-bg: #252525;
+			--key-border: #3a3a3a;
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			background: var(--bg);
+			color: var(--text);
+			font-family: "SF Mono", "Fira Code", "Cascadia Code", "JetBrains Mono", "Consolas", monospace;
+			font-size: 13px;
+			line-height: 1.5;
+			padding: 1.54em;
+		}
+
+		h1 {
+			text-align: center;
+			font-size: 1.54em;
+			color: var(--accent);
+			margin-bottom: 0.9em;
+			letter-spacing: 0.08em;
+			font-weight: 600;
+		}
+
+		.columns {
+			column-width: 20em;
+			column-gap: 1.08em;
+			max-width: 110em;
+			margin: 0 auto;
+		}
+
+		.card {
+			background: var(--surface);
+			border: 0.08em solid var(--border);
+			border-radius: 0.46em;
+			padding: 0.92em 1.08em;
+			margin-bottom: 1.08em;
+			break-inside: avoid;
+		}
+
+		.card h2 {
+			font-size: 0.85em;
+			text-transform: uppercase;
+			letter-spacing: 0.12em;
+			color: var(--accent);
+			margin-bottom: 0.62em;
+			font-weight: 600;
+		}
+
+		.binding+.binding {
+			margin-top: 0.28em;
+			padding-top: 0.5em;
+			border-top: 0.08em solid var(--border);
+		}
+
+		.keys {
+			color: #fff;
+			font-weight: 500;
+			font-size: 0.92em;
+			margin-bottom: 0.62em;
+		}
+
+		.desc {
+			color: var(--muted);
+			font-size: 0.85em;
+		}
+
+		kbd {
+			display: inline-block;
+			background: var(--key-bg);
+			border: 0.08em solid var(--key-border);
+			border-radius: 0.23em;
+			padding: 0 0.31em;
+			font-size: 0.92em;
+			font-family: inherit;
+			color: #fff;
+			line-height: 1.6;
+		}
+
+		.sep {
+			color: var(--muted);
+			margin: 0 0.15em;
+		}
+
+		@media print {
+			@page {
+				size: letter landscape;
+				margin: 0.35in 0.35in 0.35in 0.35in;
+			}
+
+			:root {
+				--bg: #fff;
+				--surface: #fff;
+				--border: #ccc;
+				--text: #111;
+				--muted: #444;
+				--accent: #005f87;
+				--key-bg: #eee;
+				--key-border: #bbb;
+			}
+
+			body {
+				font-size: 9pt;
+				line-height: 1.4;
+				padding: 0;
+			}
+
+			.columns {
+				column-gap: 0.7em;
+			}
+
+			.card {
+				border-radius: 0.35em;
+				padding: 0.71em 0.82em;
+				margin-bottom: 0.7em;
+			}
+
+			.card h2 {
+				margin-bottom: 0.59em;
+			}
+
+			kbd {
+				border-radius: 0.24em;
+				padding: 0 0.35em;
+			}
+		}
+	</style>
+</head>
+
+<body>
+
+	<h1>Hyprland Keybindings</h1>
+
+	<div class="columns">
+
+		<div class="card">
+			<h2>Media Controls <small>(hardware keys)</small></h2>
+			<div class="binding">
+				<div class="keys"><kbd>XF86AudioMute</kbd></div>
+				<div class="desc">Volume mute</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>XF86AudioRaise</kbd></div>
+				<div class="desc">Volume +5%</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>XF86AudioLower</kbd></div>
+				<div class="desc">Volume −5%</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>XF86AudioPlay</kbd></div>
+				<div class="desc">Play / pause</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>XF86AudioNext</kbd></div>
+				<div class="desc">Next track</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>XF86AudioPrev</kbd></div>
+				<div class="desc">Previous track</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<h2>Brightness <small>(hardware keys)</small></h2>
+			<div class="binding">
+				<div class="keys"><kbd>XF86MonBrightnessUp</kbd></div>
+				<div class="desc">Brightness +3%</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>XF86MonBrightnessDown</kbd></div>
+				<div class="desc">Brightness −3%</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<h2>Launch Applications</h2>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>D</kbd></div>
+				<div class="desc">Run an application</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>S</kbd></div>
+				<div class="desc">Launch WezTerm (terminal emulator)</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd></div>
+				<div class="desc">Launch WezTerm on overlay workspace</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>F</kbd></div>
+				<div class="desc">Launch Neovide (Neovim GUI)</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>R</kbd></div>
+				<div class="desc">Launch Brave browser</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<h2>Overlay workspaces</h2>
+			<div class="binding">
+				<div class="keys"><kbd>F12</kbd> <span class="sep">/</span> <kbd>Win</kbd>+<kbd>M</kbd></div>
+				<div class="desc">Toggle terminal overlay</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd></div>
+				<div class="desc">Move focused window to terminal overlay</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Menu</kbd> <span class="sep">/</span> <kbd>Win</kbd>+<kbd>N</kbd></div>
+				<div class="desc">Toggle general overlay</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd></div>
+				<div class="desc">Move focused window to general overlay</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<h2>Window Actions <small>(focused window)</small></h2>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>C</kbd></div>
+				<div class="desc">Close window</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>Y</kbd></div>
+				<div class="desc">Toggle fullscreen</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>Space</kbd></div>
+				<div class="desc">Toggle floating</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>O</kbd></div>
+				<div class="desc">Toggle horizontal/vertical split</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<h2>Change Focused Window</h2>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>H</kbd></div>
+				<div class="desc">Focus left</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>J</kbd></div>
+				<div class="desc">Focus down</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>K</kbd></div>
+				<div class="desc">Focus up</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>L</kbd></div>
+				<div class="desc">Focus right</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<h2>Move Focused Window</h2>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd></div>
+				<div class="desc">Move left</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>J</kbd></div>
+				<div class="desc">Move down</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd></div>
+				<div class="desc">Move up</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd></div>
+				<div class="desc">Move right</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<h2>Workspace &amp; Monitor</h2>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>U<span class="sep">/</span>I</kbd> <span class="sep">/</span>
+					<kbd>Win</kbd>+<kbd>Mouse Wheel ↕</kbd>
+				</div>
+				<div class="desc">Change to prev/next workspace on focused monitor</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>U<span class="sep">/</span>I</kbd></div>
+				<div class="desc">Move focused window to prev/next workspace</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>O<span class="sep">/</span>P</kbd></div>
+				<div class="desc">Move focused window to prev/next monitor</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<h2>Session</h2>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>Q</kbd></div>
+				<div class="desc">Logout (uwsm stop)</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>Q</kbd></div>
+				<div class="desc">Force exit Hyprland</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<h2>Screenshot</h2>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>;</kbd></div>
+				<div class="desc">Screenshot selected region to Pictures and clipboard</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<h2>Mouse</h2>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>drag LMB</kbd></div>
+				<div class="desc">Move window</div>
+			</div>
+			<div class="binding">
+				<div class="keys"><kbd>Win</kbd>+<kbd>drag RMB</kbd></div>
+				<div class="desc">Resize window</div>
+			</div>
+		</div>
+
+	</div>
+
+</body>
+
+</html>
