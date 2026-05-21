@@ -28,6 +28,7 @@ Current disabled files:
   - quickshell/shell.qml      (uses @ ! — not ready to install)
   - lemonade/lemonade.toml    (uses @x — currently unused)
   - lemonade/lemonade.service (uses @X — currently unused)
+  - nvim/queries/bash/indent.scm
 
 ## Known quirks
 

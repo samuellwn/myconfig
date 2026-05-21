@@ -1,5 +1,5 @@
-;; @!os:unix
-;; @!install:644:$HOME/.config/nvim/queries/bash/indent.scm
+;; @ !os:unix
+;; @ !install:644:$HOME/.config/nvim/queries/bash/indent.scm
 
 ([
   (subshell)

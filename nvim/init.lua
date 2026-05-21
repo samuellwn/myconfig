@@ -85,12 +85,12 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
 	-- IDE features
-	{
+	{ -- snippets
 		'L3MON4D3/LuaSnip',
 		version = "1.*",
 		build = "make install_jsregexp",
 	},
-	{
+	{ -- autocompletion
 		'hrsh7th/nvim-cmp',
 		dependencies = {
 			'L3MON4D3/LuaSnip', 'neovim/nvim-lspconfig', 'hrsh7th/cmp-nvim-lsp',
@@ -99,7 +99,7 @@ require('lazy').setup({
 		},
 	},
 	'andythigpen/nvim-coverage', -- Test coverage in gutter
-	{
+	{ -- autoformat
 		'stevearc/conform.nvim',
 		opts = {
 			formatters_by_ft = {
@@ -119,6 +119,11 @@ require('lazy').setup({
 				}
 			end,
 		},
+	},
+	{ -- syntax highlighting
+		'nvim-treesitter/nvim-treesitter',
+		build = ':TSUpdate',
+		lazy = false,
 	},
 	--'mfussenegger/nvim-dap', -- Browser debugger connection
 
@@ -185,25 +190,6 @@ require('lazy').setup({
 --	'neovim/nvim-lspconfig', 'ap/vim-buftabline'
 	{ 'junegunn/fzf', build = function() vim.fn['fzf#install']() end },
 	{ 'junegunn/fzf.vim', dependencies = 'fzf' },
-	{
-		'nvim-treesitter/nvim-treesitter',
-		build = ':TSUpdate',
-		opts = {
-			sync_install = false,
-			auto_install = true,
-			ensure_installed = {
-				"cpp", "css", "csv", "desktop", "awk", "bash", "cmake",
-				"git_config", "git_rebase", "gitattributes", "gitcommit",
-				"gitignore", "gdscript", "gdshader", "godot_resource",
-				"go", "gomod", "gosum", "gotmpl", "gowork",
-				"hyprlang", "http", "http", "javascript", "typescript",
-				"jq", "json", "jsonnet", "ledger", "qmljs", "python",
-				"markdown", "nginx", "zig", "yaml", "c"
-			},
-			highlight = { enable = true },
-			indent = { enable = { "bash" } },
-		},
-	},
 	'lambdalisue/suda.vim',
 --	use { 'antoinemadec/coc-fzf', branch = 'release', after = { 'fzf', 'fzf.vim' } }
 
@@ -553,6 +539,34 @@ for s, c in pairs(servers) do
 	vim.lsp.enable(s)
 end
 -- End setup for 'hrsh7th/nvim-cmp'
+-- Setup for 'nvim-treesitter/nvim-treesitter'
+local tsparsers = {
+	"cpp", "css", "csv", "desktop", "awk", "bash", "cmake",
+	"git_config", "git_rebase", "gitattributes", "gitcommit",
+	"gitignore", "gdscript", "gdshader", "godot_resource",
+	"go", "gomod", "gosum", "gotmpl", "gowork",
+	"hyprlang", "http", "http", "javascript", "typescript",
+	"jq", "json", "jsonnet", "ledger", "qmljs", "python",
+	"markdown", "nginx", "zig", "yaml", "c", "zsh",
+}
+require('nvim-treesitter').install(tsparsers)
+local tsfts = {}
+for _, p in pairs(tsparsers) do
+	for _, ft in pairs(vim.treesitter.language.get_filetypes(p)) do
+		table.insert(tsfts, ft)
+	end
+end
+local no_ts_indent = {}
+au("FileType", tsfts, function(ev)
+	vim.treesitter.start()
+	vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+	vim.wo[0][0].foldmethod = 'expr'
+	if not no_ts_indent[ev.match] then
+		vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+	end
+end)
+
+-- End setup for 'nvim-treesitter/nvim-treesitter'
 -- Setup for 'nvim-telescope/telescope.nvim`
 require('telescope').setup{}
 require('telescope').load_extension('fzf')
@@ -682,11 +696,11 @@ vim.diagnostic.config {
 
 map('n', ' d', vim.diagnostic.goto_next, {})
 
-aug(augroup("indent"), "FileType", "python", function(args)
-	vim.opt_local.cindent = false
-	vim.opt_local.smartindent = false
-	vim.opt_local.indentexpr = ""
-end)
+--aug(augroup("indent"), "FileType", "python", function(args)
+--	vim.opt_local.cindent = false
+--	vim.opt_local.smartindent = false
+--	vim.opt_local.indentexpr = ""
+--end)
 
 local auLsp = augroup("lsp")
 aug(auLsp, "LspAttach", "*", function(args)
