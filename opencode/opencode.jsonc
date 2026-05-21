@@ -1,0 +1,27 @@
+// @!os:linux
+// @!user:dracowizard
+// @!install:644:$HOME/.config/opencode/opencode.jsonc
+{
+	"$schema": "https://opencode.ai/config.json",
+	"lsp": true,
+	"disabled_providers": [
+		"opencode"
+	],
+	"provider": {
+		"leanmeangamemachine": {
+			"name": "Milo's 5090",
+			"npm": "@ai-sdk/openai-compatible",
+			"options": {
+				"baseURL": "http://leanmeangamemachine.pcaops.com:8080/v1"
+			},
+			"models": {
+				"qwen3.6-35b-q4": {
+					"name": "Qwen 3.6 35B Q4"
+				},
+				"qwen3.6-35b-q6": {
+					"name": "Qwen 3.6 35B Q6"
+				}
+			}
+		}
+	}
+}
