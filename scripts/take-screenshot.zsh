@@ -23,9 +23,9 @@ fi
 
 if command -v gpu-screen-recorder &>/dev/null; then
 	gpu-screen-recorder -w $(slurp -do -f "%wx%h+%x+%y") \
-		-cursor no -v no -o $filename
+		-cursor no -o $filename
 else
-	grim -g $(slurp -do) $filename
+	slurp -do | grim -g - $filename
 fi
 
 hyprctl keyword animations:enabled yes &>/dev/null || true
