@@ -473,6 +473,7 @@ local servers = {
 			config.settings.interpreter = get_python_path(config.root_dir)
 		end,
 	},
+	roslyn_ls = lspdefaults,
 	omnisharp = {
 		capabilities = caps,
 		cmd = { "omnisharp" },
