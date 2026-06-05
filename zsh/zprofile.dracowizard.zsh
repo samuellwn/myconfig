@@ -140,18 +140,24 @@ if which w3m >/dev/null; then export BROWSER=/usr/bin/w3m; fi
 
 export ZVM_INSTALL="$HOME/.zvm/self"
 export ASDF_DATA_DIR="$HOME/.asdf"
-export PATH="$HOME/.local/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/.ghcup/bin:$HOME/.cabal/bin:$ASDF_DATA_DIR/shims:$HOME/.zvm/bin:$ZVM_INSTALL/:$PATH"
+export PATH="$HOME/.local/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/.cache/.bun/bin:$HOME/.ghcup/bin:$HOME/.cabal/bin:$ASDF_DATA_DIR/shims:$HOME/.zvm/bin:$ZVM_INSTALL/:$PATH"
 
 if [[ -z $__loaded__nvm ]]; then
 	__loaded__nvm=yes
 	# TODO: add other paths for this
 	if [[ -e /usr/share/nvm/init-nvm.sh ]]; then
-			_PREFIX=$PREFIX
 			unset PREFIX
 			export NVM_DIR="$HOME/.local/share/nvm"
 			source /usr/share/nvm/init-nvm.sh
-			export PREFIX=$_PREFIX
-			unset _PREFIX
+	fi
+fi
+
+if [[ -z $__loaded__omp ]] && command -v omp >/dev/null 2>&1; then
+	__loaded__omp=yes
+	if [[ $_my_zprofile_shell == bash ]]; then
+		eval "$(omp completions bash)"
+	elif [[ $_my_zprofile_shell == zsh ]]; then
+		eval "$(omp completions zsh)"
 	fi
 fi
 
@@ -166,7 +172,7 @@ export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
 
 # Local path
 if [[ -d $HOME/.local ]]; then
-	export PREFIX=$HOME/.local
+	PREFIX=$HOME/.local
 	if [[ -d $PREFIX/src ]]; then export PYTHONPATH=$PREFIX/src:$PYTHONPATH; fi
 	if [[ -d $PREFIX/share/man ]]; then
 		export MANDIR=$PREFIX/share/man
@@ -180,6 +186,7 @@ if [[ -d $HOME/.local ]]; then
 	if [[ -d $PREFIX/include ]]; then
 		export CPPFLAGS="-I$PREFIX/include $CPPFLAGS"
 	fi
+	unset PREFIX
 fi
 if
 	which less >/dev/null; then
