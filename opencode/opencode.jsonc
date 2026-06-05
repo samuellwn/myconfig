@@ -7,6 +7,9 @@
 	"disabled_providers": [
 		"opencode"
 	],
+	"plugin": [
+		"openrtk"
+	],
 	"provider": {
 		"leanmeangamemachine": {
 			"name": "Milo's 5090",
