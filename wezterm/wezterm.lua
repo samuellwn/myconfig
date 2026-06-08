@@ -295,11 +295,11 @@ wezterm.on('format-tab-title', function(tab, tabs, panes, config, hover, max_wid
 			{ Foreground = { Color = 'white' } },
 			{ Text = ' ' .. title .. ' ' },
 		}
-	else
+	elseif tab_title:sub(1, #'π') ~= 'π' and pane.title:sub(1, #'π') ~= 'π' then
+		-- Oh-My-Pi triggers has_unseen_output periodically, even when no new output is present
 		local has_unseen_output = false
 		for _, pane in ipairs(tab.panes) do
-			-- Oh-My-Pi triggers has_unseen_output periodically, even when no new output is present
-			if pane.has_unseen_output and not basename(pane.foreground_process_name) == "omp" then
+			if pane.has_unseen_output then
 				has_unseen_output = true
 				break
 			end
