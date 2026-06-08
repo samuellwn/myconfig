@@ -108,6 +108,17 @@ elif [[ $_my_zprofile_shell == zsh ]]; then
 		fi
 	}
 
+	_clear_term_title() {
+		print -n -- $'\e]0;zsh\a'
+	}
+
+	if [[ -z $__loaded__clear_term_title ]]; then
+		__loaded__clear_term_title="yes"
+		autoload -Uz add-zsh-hook
+		add-zsh-hook precmd _clear_term_title
+		_clear_term_title
+	fi
+
 	if [[ -r /usr/share/powerline/bindings/zsh/powerline.zsh ]]; then
 		if [[ -z $__loaded__powerline ]]; then
 			__loaded__powerline=yes
