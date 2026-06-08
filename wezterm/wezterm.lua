@@ -247,4 +247,72 @@ local config = {
 	}
 }
 
+wezterm.on('format-tab-title', function(tab, tabs, panes, config, hover, max_width)
+	local pane = tab.active_pane
+	local cwd = pane.current_working_dir
+
+	-- if cwd is a file:// URL, strip the scheme
+	if type(cwd) == 'string' then
+		cwd = string.gsub(cwd, '^file://', '')
+	elseif cwd.scheme == 'file' then
+		cwd = cwd.file_path
+	else
+		cwd = wezterm.to_string(cwd)
+	end
+	-- replace home dir with ~ for readability
+	local home = wezterm.home_dir
+	if home and #home > 0 and cwd:sub(1, #home) == home then
+		cwd = '~' .. cwd:sub(#home + 1)
+	end
+
+	-- fallback if cwd is empty
+	if #cwd == 0 then
+		cwd = ' ?'
+	end
+	-- Get the user running the shell inside this pane.
+	-- WEZTERM_USER is set by wezterm shell integration (id -un).
+	local user = nil
+	if pane.user_vars then
+		user = pane.user_vars.WEZTERM_USER
+	end
+
+	local title = cwd
+
+	if user and #user > 0 then
+		title = user .. ':' .. title
+	end
+
+	local tab_title = tab.tab_title
+	if tab_title and #tab_title > 0 then
+		title = title .. " → " .. tab_title
+	else
+		title = title .. " → " .. pane.title
+	end
+
+	if user == 'root' then
+		return {
+			{ Background = { Color = '#8B0000' } },
+			{ Foreground = { Color = 'white' } },
+			{ Text = ' ' .. title .. ' ' },
+		}
+	else
+		local has_unseen_output = false
+		for _, pane in ipairs(tab.panes) do
+			if pane.has_unseen_output then
+				has_unseen_output = true
+				break
+			end
+		end
+		if has_unseen_output then
+			return {
+				{ Background = { Color = '#00008B' } },
+				{ Foreground = { Color = 'white' } },
+				{ Text = ' ' .. title .. ' ' },
+			}
+		end
+	end
+
+	return title
+end)
+
 return config
