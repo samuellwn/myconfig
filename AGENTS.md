@@ -19,6 +19,7 @@ Supported directives (all use the `@!directive:arg` format):
   @!dirmode:<mode>:<path>
   @!hardlink:<path>      # hardlinks from the last-@!install'd file
   @!zshexpn              # shell-expand file contents before install
+  @!pipe:<command>       # pipe file through shell command before install
 
 ## Disabling annotations
 

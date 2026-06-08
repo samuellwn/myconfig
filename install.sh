@@ -22,6 +22,7 @@ dirmodes=()
 last_installed=""
 find . -path ./.git -prune -o -type f \! -name install.sh -print | while read src; do
 	zshexpn=no
+	pipe_cmd=
 	if_os=
 	if_user=
 	if_host=
@@ -31,6 +32,7 @@ find . -path ./.git -prune -o -type f \! -name install.sh -print | while read sr
 			user) if_user=$cmd[2];;
 			host) if_host=$cmd[2];;
 			zshexpn) zshexpn=yes;;
+			pipe) pipe_cmd=$cmd[2];;
 		esac
 		if [[ -n $if_os && $if_os != $OS && $if_os != $OS_FAMILY ]]; then
 			continue
@@ -59,11 +61,20 @@ find . -path ./.git -prune -o -type f \! -name install.sh -print | while read sr
 					instsrc=$file
 				fi
 
+				if [[ -n $pipe_cmd ]]; then
+					eval $pipe_cmd < $instsrc > $file
+					instsrc=$file
+				fi
+
 				if [[ ! -d $(dirname $dst) ]]; then
 					install -d -m 755 $(dirname $dst)
 				fi
 				install -m ${cmd[2]} $instsrc $dst
-				echo "install $src -> $dst"
+				if [[ -n $pipe_cmd ]]; then
+					echo "install $src -> $pipe_cmd -> $dst"
+				else
+					echo "install $src -> $dst"
+				fi
 				last_installed=$dst
 				;;
 			hardlink)
