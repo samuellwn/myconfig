@@ -298,7 +298,8 @@ wezterm.on('format-tab-title', function(tab, tabs, panes, config, hover, max_wid
 	else
 		local has_unseen_output = false
 		for _, pane in ipairs(tab.panes) do
-			if pane.has_unseen_output then
+			-- Oh-My-Pi triggers has_unseen_output periodically, even when no new output is present
+			if pane.has_unseen_output and not basename(pane.foreground_process_name) == "omp" then
 				has_unseen_output = true
 				break
 			end
