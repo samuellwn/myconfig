@@ -1,7 +1,6 @@
-# @!os:linux
-# @!user:dracowizard
-# @!install:644:$HOME/.config/systemd/user/quickshell.service
-
+# @ !os:systemd
+# @ !user:dracowizard
+# @ !install:644:$HOME/.config/systemd/user/quickshell.service
 [Unit]
 Description=Quickshell
 PartOf=graphical-session.target

@@ -1,7 +1,6 @@
-# @!os:linux
-# @!user:dracowizard
-# @!install:644:$HOME/.config/systemd/user/wayvnc@.service
-
+# @ !os:systemd
+# @ !user:dracowizard
+# @ !install:644:$HOME/.config/systemd/user/wayvnc@.service
 [Unit]
 Description=A VNC server for wlroots based Wayland compositors
 After=wayland-wm@hyprland.desktop.service

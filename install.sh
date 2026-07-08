@@ -17,6 +17,14 @@ if [[ $this_user == "sam" ]]; then this_user=dracowizard; fi
 # Handle hostnames that have the domain part specified
 this_host=$(printf "%s\n" $HOST | cut -d. -f1)
 
+if [[ $OS == linux ]]; then
+	if command -v systemctl &>/dev/null; then
+		OS=systemd
+	elif command -v openrc &>/dev/null; then
+		OS=openrc
+	fi
+fi
+
 dirmodes=()
 
 last_installed=""

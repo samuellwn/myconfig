@@ -1,7 +1,6 @@
-# @!os:linux
-# @!user:dracowizard
-# @!install:644:$HOME/.config/systemd/user/playerctl.service
-
+# @ !os:systemd
+# @ !user:dracowizard
+# @ !install:644:$HOME/.config/systemd/user/playerctl.service
 [Unit]
 Description=playerctld
 
