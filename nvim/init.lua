@@ -433,6 +433,7 @@ local servers = {
 	ols = lspdefaults,
 	gdscript = lspdefaults,
 	zls = lspdefaults,
+	texlab = lspdefaults,
 	yamlls = {
 		capabilities = caps,
 		settings = {
@@ -542,13 +543,12 @@ end
 -- End setup for 'hrsh7th/nvim-cmp'
 -- Setup for 'nvim-treesitter/nvim-treesitter'
 local tsparsers = {
-	"cpp", "css", "csv", "desktop", "awk", "bash", "cmake",
-	"git_config", "git_rebase", "gitattributes", "gitcommit",
-	"gitignore", "gdscript", "gdshader", "godot_resource",
-	"go", "gomod", "gosum", "gotmpl", "gowork",
-	"hyprlang", "http", "http", "javascript", "typescript",
-	"jq", "json", "jsonnet", "ledger", "qmljs", "python",
-	"markdown", "nginx", "zig", "yaml", "c", "zsh",
+	"awk", "bash", "c", "cmake", "cpp", "css", "csv", "desktop", "gdscript",
+	"gdshader", "gitattributes", "gitcommit", "git_config", "gitignore",
+	"git_rebase", "go", "godot_resource", "gomod", "gosum", "gotmpl", "gowork",
+	"http", "http", "hyprlang", "javascript", "jq", "json", "jsonnet", "latex",
+	"ledger", "markdown", "nginx", "python", "qmljs", "rust", "typescript",
+	"yaml", "zig", "zsh",
 }
 require('nvim-treesitter').install(tsparsers)
 local tsfts = {}

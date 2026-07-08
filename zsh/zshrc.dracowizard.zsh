@@ -154,6 +154,104 @@ elif [[ $_my_zprofile_shell == zsh ]]; then
 	setopt numericglobsort
 	setopt nobeep
 
+	function _wf_cmd_t {
+		emulate -L zsh
+		set -uo pipefail -o errreturn
+
+		if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+			echo "This command must be run inside a git repo" 1>&2
+			return 1
+		fi
+
+		cd $(git rev-parse --show-toplevel)
+
+		local thread_name=${1:-}
+
+		while [[ -z $thread_name ]]; do
+			thread_name=wf-$(openssl rand -hex 2)
+			if [[ -d ../.wf/threads/${PWD:t}/${thread_name} ]]; then
+				thread_name=""
+			fi
+		done
+
+		#mkdir -p ../.wf/threads
+		local worktree=../.wf/threads/${PWD:t}/$thread_name
+		git worktree add $worktree
+
+		if [[ -r .env ]]; then
+			cp .env $worktree
+		fi
+
+		if [[ -d .sqlx ]]; then
+			cp -r .sqlx $worktree
+		fi
+
+		cd ../.wf/threads/${PWD:t}/$thread_name
+	}
+
+	function _wf_impl_td {
+		emulate -L zsh
+		set -uo pipefail -o errreturn
+
+		if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+			echo "This command must be run inside a git repo" 1>&2
+			return 1
+		fi
+
+		if [[ $(git rev-parse --git-dir) == $(git rev-parse --git-common-dir) ]]; then
+			echo "This command doesn't work inside the main worktree" 1>&2
+			return 1
+		fi
+
+		cd $(git rev-parse --show-toplevel)
+
+		local thread_name=${PWD:t}
+
+		# This isn't technically correct, but it will work for every case I care about.
+		# (It breaks if you use a custom path for your main worktree)
+		local git_dir=$(git rev-parse --path-format=absolute --git-common-dir)
+		git worktree remove .
+		cd ${git_dir:h}
+
+		if [[ $1 = *r* ]]; then
+			if [[ $1 = *i* ]]; then
+				git rebase -i HEAD $thread_name
+			else
+				git rebase HEAD $thread_name
+			fi
+		fi
+		if [[ $1 = *m* ]]; then
+			git merge $thread_name
+		fi
+		if [[ $1 = *d* ]]; then
+			git branch -d $thread_name
+		fi
+	}
+
+	function _wf_cmd_td {
+		_wf_impl_td ''
+	}
+
+	function _wf_cmd_tdd {
+		_wf_impl_td d
+	}
+
+	function _wf_cmd_tdr {
+		_wf_impl_td rmd
+	}
+
+	function _wf_cmd_tdm {
+		_wf_impl_td md
+	}
+
+	function wf {
+		emulate -L zsh
+		set -uo pipefail -o errreturn
+
+		local cmd=$1
+		shift
+		_wf_cmd_$cmd "$@"
+	}
 
 	# Use history substring search
 	# TODO: add homebrew path for this

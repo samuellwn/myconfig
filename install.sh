@@ -21,11 +21,14 @@ dirmodes=()
 
 last_installed=""
 find . -path ./.git -prune -o -type f \! -name install.sh -print | while read src; do
+	sudo -nv &>/dev/null # don't let sudo credential caching timeout
 	zshexpn=no
-	pipe_cmd=
-	if_os=
-	if_user=
-	if_host=
+	sudoprfx=""
+	sudoshow=""
+	pipe_cmd=""
+	if_os=""
+	if_user=""
+	if_host=""
 	grep -E '@!\w+:' $src | sed -E 's/^.*@!//' | while IFS=: read -Ar cmd; do
 		case $cmd[1] in
 			os) if_os=$cmd[2];;
@@ -33,6 +36,7 @@ find . -path ./.git -prune -o -type f \! -name install.sh -print | while read sr
 			host) if_host=$cmd[2];;
 			zshexpn) zshexpn=yes;;
 			pipe) pipe_cmd=$cmd[2];;
+			sudo) sudoprfx=sudo; sudoshow="sudo ";;
 		esac
 		if [[ -n $if_os && $if_os != $OS && $if_os != $OS_FAMILY ]]; then
 			continue
@@ -46,8 +50,8 @@ find . -path ./.git -prune -o -type f \! -name install.sh -print | while read sr
 		case $cmd[1] in
 			dirmode)
 				if [[ ! ${dirmodes[(i)${cmd[2]}:${(e)cmd[3]}]} -le ${#dirmodes} ]]; then
-					install -d -m ${cmd[2]} ${(e)cmd[3]}
-					echo "dirmode ${cmd[2]} ${(e)cmd[3]}"
+					echo "${sudoshow}dirmode ${cmd[2]} ${(e)cmd[3]}"
+					$sudoprfx install -d -m ${cmd[2]} ${(e)cmd[3]}
 					dirmodes+=(${cmd[2]}:${(e)cmd[3]})
 				fi
 				;;
@@ -66,15 +70,15 @@ find . -path ./.git -prune -o -type f \! -name install.sh -print | while read sr
 					instsrc=$file
 				fi
 
-				if [[ ! -d $(dirname $dst) ]]; then
-					install -d -m 755 $(dirname $dst)
-				fi
-				install -m ${cmd[2]} $instsrc $dst
 				if [[ -n $pipe_cmd ]]; then
-					echo "install $src -> $pipe_cmd -> $dst"
+					echo "${sudoshow}install $src -> $pipe_cmd -> $dst"
 				else
-					echo "install $src -> $dst"
+					echo "${sudoshow}install $src -> $dst"
 				fi
+				if [[ ! -d $(dirname $dst) ]]; then
+					$sudoprfx install -d -m 755 $(dirname $dst)
+				fi
+				$sudoprfx install -m ${cmd[2]} $instsrc $dst
 				last_installed=$dst
 				;;
 			hardlink)
@@ -84,13 +88,13 @@ find . -path ./.git -prune -o -type f \! -name install.sh -print | while read sr
 				fi
 				src=$last_installed
 				dst=${(e)cmd[2]}
-				ln $src $dst
-				echo "hardlink $src -> $dst"
+				echo "${sudoshow}hardlink $src -> $dst"
+				$sudoprfx ln $src $dst
 				;;
 			postexec)
+				echo "NOT IMPLEMENTED ${sudoshow}exec $cmd[2]"
 				# uncomment once i'm sure this does the right thing
-				# ${=cmd[2]}
-				echo "NOT IMPLEMENTED exec $cmd[2]"
+				# $sudoprfx ${=cmd[2]}
 				;;
 		esac
 	done
@@ -100,4 +104,9 @@ done
 # Sometimes Hyprland doesn't reload config properly
 if command -v hyprctl >/dev/null; then
 	hyprctl reload &>/dev/null || true
+fi
+
+# We install some systemd user units
+if command -v systemctl >/dev/null; then
+	systemctl --user daemon-reload &>/dev/null || true
 fi

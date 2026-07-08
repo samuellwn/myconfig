@@ -1,0 +1,310 @@
+;; @!os:linux
+;; @!user:dracowizard
+;; @!sudo:
+;; @!install:644:/etc/kmonad/razer-naga-trinity.kbd
+
+(defcfg
+  input (device-file "/dev/input/by-id/usb-Razer_Razer_Naga_Trinity_00000000001A-if02-event-kbd" :ignore-missing true)
+  output (uinput-sink "KMonad Razer Naga Trinity")
+  cmp-seq compose
+  cmp-seq-delay 5
+  key-seq-delay 5
+  fallthrough true
+  allow-cmd true
+  implicit-around around
+)
+
+(defsrc
+  x y
+
+  a  b  c
+  d  e  f
+  g  h  i
+  j  k  l
+
+     1
+  4     2
+  5     3
+    6 7
+)
+
+(defalias
+  sw  (layer-switch switch)
+  dsk (layer-switch desktop)
+  lse (layer-switch space-engineers)
+  lc  (layer-switch crab)
+  lf  (layer-switch factorio)
+  lt  (layer-switch thrive)
+  lps (layer-switch planetside)
+  lv  (layer-switch voidling)
+  lwf (layer-switch warframe)
+  ld  (layer-switch descendant)
+  zz0 (layer-switch zenless)
+)
+
+(deflayer desktop
+  pgup pgdn
+
+  M-u  home fwd
+  M-i  end  back
+  XX   XX   XX
+  @sw  XX   XX
+
+    home
+  M-u   fwd
+  M-i   back
+   met end
+)
+
+(deflayer template
+  XX XX
+
+  XX   XX   XX
+  XX   XX   XX
+  XX   XX   XX
+  @sw  XX   XX
+
+       XX
+  XX        XX
+  XX        XX
+    XX    XX
+)
+
+(deflayer switch
+  XX XX
+
+  @dsk @lwf @lse
+  @lc  @lf  @lv
+  @lt  @ld  @zz0
+  XX   XX   @lps
+
+       XX
+  XX        XX
+  XX        XX
+    XX    XX
+)
+
+(deflayer space-engineers
+  XX XX
+
+  ctl  ,    C-f
+  S-k  .    C-g
+  XX   XX   XX
+  @sw  XX   XX
+
+      lctl
+  ,         C-f
+  .         C-g
+    S-k   XX
+)
+
+(deflayer crab
+  r e
+
+  sft  f    g
+  x    tab  l
+  XX   XX   XX
+  @sw  XX   XX
+
+       XX
+  XX        XX
+  XX        XX
+    XX    XX
+)
+
+(deflayer factorio
+  XX XX
+
+  t    ctl  sft
+  ent  m    f
+  XX   XX   XX
+  @sw  XX   XX
+
+       XX
+  f         ctl
+  ent       sft
+    t     m
+)
+
+(deflayer thrive
+  XX XX
+
+  g    r    e
+  h    t    v
+  XX   XX   XX
+  @sw  XX   XX
+
+       XX
+  XX        XX
+  XX        XX
+    XX    XX
+)
+
+(deflayer planetside
+  XX XX
+
+  3    2    1
+  v    q    f
+  XX   XX   XX
+  @sw  XX   XX
+
+       1
+  f         2
+  q         3
+    v     4
+)
+
+(deflayer voidling
+  XX XX
+
+  ctl  r    t
+  XX   XX   XX
+  XX   XX   XX
+  @sw  XX   XX
+
+       r
+  ctl       t
+  XX        XX
+    XX    XX
+)
+
+(defalias
+  wf1 (around-next-timeout 2000 (layer-toggle warframe1) XX)
+  wf2 (around-next-timeout 2000 (layer-toggle warframe2) XX)
+)
+
+(deflayer warframe
+  r tab
+
+  ctl  e    1
+  @wf1 x    @wf2
+  XX   XX   XX
+  @sw  XX   XX
+
+       e
+  ctl       1
+  @wf1     @wf2
+    XX   XX
+)
+
+(deflayer warframe1
+  r tab
+
+  x    m    5
+  r    XX   XX
+  XX   XX   XX
+  @sw  XX   XX
+
+       m
+  x         5
+  r         XX
+    XX    XX
+)
+
+(deflayer warframe2
+  r tab
+
+  3    2    4
+  XX   XX   f
+  XX   XX   XX
+  @sw  XX   XX
+
+       2
+  3         4
+  XX        f
+    XX    XX
+)
+
+(defalias
+  d1 (around-next-timeout 2000 (layer-toggle descendant1) XX)
+  d2 (around-next-timeout 2000 (layer-toggle descendant2) XX)
+)
+
+(deflayer descendant
+  r tab
+
+  ctl  f    q
+  @d1  c    @d2
+  XX   XX   XX
+  @sw  XX   XX
+
+       f
+  ctl       q
+  @d1      @d2
+    XX   XX
+)
+
+(deflayer descendant1
+  r tab
+
+  tab  m    e
+  r    XX   r
+  XX   XX   XX
+  @sw  XX   XX
+
+       m
+  tab       e
+  r         r
+    XX    XX
+)
+
+(deflayer descendant2
+  r tab
+
+  z    v    c
+  q    XX   q
+  XX   XX   XX
+  @sw  XX   XX
+
+       v
+  c         z
+  XX        XX
+    XX    XX
+)
+
+(defalias
+  zz1 (around-next-timeout 2000 (layer-toggle zenless1) XX)
+  zz2 (around-next-timeout 2000 (layer-toggle zenless2) XX)
+)
+
+(deflayer zenless
+  r tab
+
+  q    spc  e
+  @zz1 c    @zz2
+  XX   XX   XX
+  @sw  XX   XX
+
+       spc
+  q        e
+  @zz1     @zz2
+    XX   XX
+)
+
+(deflayer zenless1
+  r tab
+
+  c    m    b
+  j    XX   j
+  XX   XX   XX
+  @sw  XX   XX
+
+       m
+  c         b
+  j         j
+    XX    XX
+)
+
+(deflayer zenless2
+  r tab
+
+  f1   f4   XX
+  ~    XX   ~
+  XX   XX   XX
+  @sw  XX   XX
+
+       f4
+  f1        XX
+  ~         ~
+    XX    XX
+)
