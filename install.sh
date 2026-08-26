@@ -17,12 +17,15 @@ if [[ $this_user == "sam" ]]; then this_user=dracowizard; fi
 # Handle hostnames that have the domain part specified
 this_host=$(printf "%s\n" $HOST | cut -d. -f1)
 
+INIT=unknown
 if [[ $OS == linux ]]; then
 	if command -v systemctl &>/dev/null; then
-		OS=systemd
+		INIT=systemd
 	elif command -v openrc &>/dev/null; then
-		OS=openrc
+		INIT=openrc
 	fi
+elif [[ $OS == darwin ]]; then
+	INIT=launchd
 fi
 
 dirmodes=()
@@ -46,7 +49,7 @@ find . -path ./.git -prune -o -type f \! -name install.sh -print | while read sr
 			pipe) pipe_cmd=$cmd[2];;
 			sudo) sudoprfx=sudo; sudoshow="sudo ";;
 		esac
-		if [[ -n $if_os && $if_os != $OS && $if_os != $OS_FAMILY ]]; then
+		if [[ -n $if_os && $if_os != $OS && $if_os != $OS_FAMILY && $if_os != $INIT ]]; then
 			continue
 		fi
 		if [[ -n $if_user && $if_user != $USER && $if_user != $this_user ]]; then

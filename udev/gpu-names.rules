@@ -1,0 +1,29 @@
+# @!os:linux
+# @!host:dragonfury
+# @!sudo:
+# @!install:644:/etc/udev/rules.d/99-gpu-names.rules
+
+KERNEL=="card*", SUBSYSTEM=="drm", SUBSYSTEMS=="pci", \
+	ATTRS{vendor}=="0x1002", ATTRS{device}=="0x7551", \
+	SYMLINK+="dri/card-r9700", TAG-="seat", TAG-="master-of-seat", \
+	ENV{ID_SEAT}="", ENV{ID_FOR_SEAT}=""
+
+KERNEL=="card*", SUBSYSTEM=="drm", SUBSYSTEMS=="pci", \
+	ATTRS{vendor}=="0x1002", ATTRS{device}=="0x73ff", \
+	SYMLINK+="dri/card-rx6600"
+
+KERNEL=="card*", SUBSYSTEM=="drm", SUBSYSTEMS=="pci", \
+	ATTRS{vendor}=="0x1002", ATTRS{device}=="0x13c0", \
+	SYMLINK+="dri/card-9800x3d"
+
+KERNEL=="card*", SUBSYSTEM=="drm", SUBSYSTEMS=="pci", \
+	ATTRS{vendor}=="0x10de", ATTRS{device}=="0x1380", \
+	SYMLINK+="dri/card-gtx750ti"
+
+KERNEL=="card*", SUBSYSTEM=="drm", SUBSYSTEMS=="pci", \
+	ATTRS{vendor}=="0x10de", ATTRS{device}=="0x1184", \
+	SYMLINK+="dri/card-gtx770"
+
+KERNEL=="card*", SUBSYSTEM=="drm", SUBSYSTEMS=="pci", \
+	ATTRS{vendor}=="0x1002", ATTRS{device}=="0x682c", \
+	SYMLINK+="dri/card-w4100"

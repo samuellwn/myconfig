@@ -174,10 +174,10 @@
 )
 
 (deflayer warframe
-  r tab
+  r x
 
   ctl  e    1
-  @wf1 x    @wf2
+  4    3    2
   XX   XX   XX
   @sw  XX   XX
 
@@ -218,17 +218,47 @@
 (defalias
   d1 (around-next-timeout 2000 (layer-toggle descendant1) XX)
   d2 (around-next-timeout 2000 (layer-toggle descendant2) XX)
+  fdv (layer-switch tfd-viessa)
+  fdf (layer-switch tfd-freyna)
 )
 
 (deflayer descendant
-  r tab
+  XX XX
 
-  ctl  f    q
-  @d1  c    @d2
+  @fdv @fdf XX
+  XX   XX   XX
   XX   XX   XX
   @sw  XX   XX
 
-       f
+       XX
+  XX        XX
+  XX        XX
+    XX    XX
+)
+
+(deflayer tfd-viessa
+  r tab
+
+  ctl  v    q
+  @d1  c    z
+  XX   XX   XX
+  @sw  XX   XX
+
+       v
+  ctl       q
+  @d1      @d2
+    XX   XX
+)
+
+(deflayer tfd-freyna
+  r tab
+
+  ctl  c    q
+  @d1  v    z
+  XX   XX   XX
+  @sw  XX   XX
+
+       v
   ctl       q
   @d1      @d2
     XX   XX
@@ -237,8 +267,8 @@
 (deflayer descendant1
   r tab
 
-  tab  m    e
-  r    XX   r
+  f    m    e
+  f1   XX   f2
   XX   XX   XX
   @sw  XX   XX
 

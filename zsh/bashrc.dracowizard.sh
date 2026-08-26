@@ -5,7 +5,7 @@
 
 if [[ -z __loaded_bash_profile ]]; then
 	__loaded_bash_profile=yes
-	. $HOME/.zshenv
+	. $HOME/.zprofile
 	if [[ $- == *i* ]]; then
 		. $HOME/.zshrc
 	fi

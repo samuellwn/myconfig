@@ -423,6 +423,7 @@ local lspdefaults = {
 	capabilities = caps,
 }
 local servers = {
+	lua_ls = lspdefaults,
 	gopls = lspdefaults,
 	fsautocomplete = lspdefaults,
 	ocamllsp = lspdefaults,

@@ -1,6 +1,6 @@
 # @!os:unix
 # @!user:dracowizard
-# @!install:644:$HOME/.zshenv
+# @!install:644:$HOME/.zprofile
 
 if [[ -z $ZSH_VERSION ]]; then
 	if [[ -z $BASH_VERSION ]]; then
@@ -107,15 +107,19 @@ export VISUAL=$EDITOR
 
 export ZVM_INSTALL="$HOME/.zvm/self"
 export ASDF_DATA_DIR="$HOME/.asdf"
-export PATH="$HOME/.local/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/.cache/.bun/bin:$HOME/.ghcup/bin:$HOME/.cabal/bin:$ASDF_DATA_DIR/shims:$HOME/.zvm/bin:$ZVM_INSTALL/:$PATH"
+export PATH="$HOME/.local/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/.bun/bin:$HOME/.ghcup/bin:$HOME/.cabal/bin:$ASDF_DATA_DIR/shims:$HOME/.zvm/bin:$ZVM_INSTALL/:$PATH"
 
 if [[ -z $__loaded__nvm ]]; then
 	__loaded__nvm=yes
 	# TODO: add other paths for this
 	if [[ -e /usr/share/nvm/init-nvm.sh ]]; then
-			unset PREFIX
-			export NVM_DIR="$HOME/.local/share/nvm"
-			source /usr/share/nvm/init-nvm.sh
+		unset PREFIX
+		export NVM_DIR="$HOME/.local/share/nvm"
+		source /usr/share/nvm/init-nvm.sh
+	elif [[ -e $HOME/.nvm/nvm.sh ]]; then
+		unset PREFIX
+		export NVM_DIR="$HOME/.nvm"
+		source $HOME/nvm/nvm.sh
 	fi
 fi
 

@@ -1,0 +1,28 @@
+#!/sbin/openrc-run
+# Copyright 2026 Gentoo Authors
+# For this file only: Distributed under the terms of the GNU General Public License v2
+# @!os:openrc
+# @!install:755:$HOME/.config/rc/init.d/docker-rootless
+
+name="docker-rootless"
+description="Rootless Docker daemon"
+command="/usr/bin/dockerd-rootless.sh"
+
+pidfile="${XDG_RUNTIME_DIR}/docker.pid"
+command_args="-p ${pidfile} ${DOCKER_OPTS}"
+
+DOCKER_STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/docker"
+DOCKER_LOGFILE="${DOCKER_LOGFILE:-${DOCKER_STATE_DIR}/docker.log}"
+DOCKER_ERRFILE="${DOCKER_ERRFILE:-${DOCKER_LOGFILE}}"
+DOCKER_OUTFILE="${DOCKER_OUTFILE:-${DOCKER_LOGFILE}}"
+
+start_stop_daemon_args="--background \
+	--stderr \"${DOCKER_ERRFILE}\" \
+	--stdout \"${DOCKER_OUTFILE}\""
+retry="${DOCKER_RETRY:-TERM/60/KILL/10}"
+
+start_pre() {
+	checkpath -d -m 0700 "${XDG_RUNTIME_DIR}"
+	checkpath -d -m 0700 "${DOCKER_STATE_DIR}"
+	checkpath -f -m 0600 "${DOCKER_LOGFILE}"
+}
