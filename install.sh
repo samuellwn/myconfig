@@ -72,7 +72,7 @@ find . -path ./.git -prune -o -type f \! -name install.sh -print | while read sr
 				if [[ $zshexpn = yes ]]; then
 					contents=$(cat $src)
 					contents=${(e)contents}
-					printf "%s" $contents > $file
+					printf "%s\n" $contents > $file
 					instsrc=$file
 				fi
 
