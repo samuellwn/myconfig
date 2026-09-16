@@ -155,10 +155,10 @@
 )
 
 (deflayer voidling
-  XX XX
+  r f
 
-  ctl  r    t
-  XX   XX   XX
+  ctl  e    sft
+  q    XX   t
   XX   XX   XX
   @sw  XX   XX
 

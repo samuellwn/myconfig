@@ -56,6 +56,21 @@ hl.config({
 	},
 })
 
+
+hl.env("GDK_BACKEND", "wayland,x11")
+hl.env("QT_QPA_PLATFORM", "wayland;xcb")
+-- apparently, SDL's wayland support isn't reliable
+-- hl.env("SDL_VIDEODRIVER", "wayland")
+hl.env("CLUTTER_BACKEND", "wayland")
+hl.env("XDG_SESSION_TYPE", "wayland")
+hl.env("ELECTRON_OZONE_PLATFORM_HINT", "wayland")
+hl.env("XDG_CURRENT_DESKTOP", "Hyprland")
+hl.env("XDG_SESSION_DESKTOP", "Hyprland")
+hl.env("QT_WAYLAND_DISABLE_WINDOWDECORATIONS", "1")
+
+-- Why is AWT the only toolkit that needs this?
+hl.env("_JAVA_AWT_WM_NONREPARENTING", "1")
+
 hl.device({ name = "kmonad-razer-naga-trinity-1", sensitivity = -0.9 })
 hl.device({ name = "razer-razer-naga-trinity-2", sensitivity = -0.9 })
 hl.device({ name = "razer-razer-naga-trinity-3", sensitivity = -0.9 })
@@ -144,11 +159,9 @@ hl.on("hyprland.start", function()
 		-- We assume if we don't have uwsm here, we're using openrc
 		if have_uwsm then
 			-- This is untested
-			hl.exec_cmd(
-				"systemctl --user start wireplumber.service hypridle.service hyprpolkitagent.service mako.service")
+			hl.exec_cmd("systemctl --user start wireplumber.service hypridle.service hyprpolkitagent.service")
 		else
-			hl.exec_cmd(
-				"rc-service -U -N dbus start && rc-service -U -N pipewire start && rc-service -U -N pipewire-pulse start && rc-service -U -N wireplumber start && rc-service -U -N mako start")
+			hl.exec_cmd("rc-service -U -N dbus start && rc-service -U -N pipewire start && rc-service -U -N pipewire-pulse start && rc-service -U -N wireplumber start")
 			hl.exec_cmd("hypridle")
 			hl.exec_cmd("/usr/libexec/hyprpolkitagent")
 		end
@@ -161,7 +174,7 @@ hl.on("hyprland.start", function()
 			})
 		end
 
-		hl.exec_cmd("systemctl --user start wireplumber.service hypridle.service hyprpolkitagent.service mako.service")
+		hl.exec_cmd("systemctl --user start wireplumber.service hypridle.service hyprpolkitagent.service")
 	end
 
 	hl.exec_cmd(add_uwsm("wezterm start"), { workspace = "special:term silent" })

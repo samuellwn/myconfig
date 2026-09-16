@@ -5,11 +5,13 @@
 
 set -euo pipefail
 
+mkdir -p "$HOME/Pictures/Screenshots"
 filename="$HOME/Pictures/Screenshots/$(date +'%Y-%m-%d_%H-%M-%S').png"
 
 hyprpicker_pid=
 
-hyprctl keyword animations:enabled no &>/dev/null
+hyprctl keyword animations:enabled no &>/dev/null || \
+hyprctl eval 'hl.config({ animations = { enabled = false } })' &>/dev/null
 sleep 0.1
 
 if command -v hyprpicker &>/dev/null; then
@@ -29,5 +31,6 @@ else
 fi
 
 hyprctl keyword animations:enabled yes &>/dev/null || true
+hyprctl eval 'hl.config({ animations = { enabled = true } })' &>/dev/null || true
 
 wl-copy --type image/png <$filename

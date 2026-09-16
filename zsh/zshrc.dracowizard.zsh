@@ -213,6 +213,12 @@ elif [[ $_my_zprofile_shell == zsh ]]; then
 		git worktree remove .
 		cd ${git_dir:h}
 
+		local stashed=no
+		if [[ $1 = *r* || $1 = *m* || $1 = *f* ]]; then
+			git stash
+			stashed=yes
+		fi
+
 		if [[ $1 = *r* ]]; then
 			if [[ $1 = *i* ]]; then
 				git rebase -i HEAD $thread_name
@@ -220,11 +226,16 @@ elif [[ $_my_zprofile_shell == zsh ]]; then
 				git rebase HEAD $thread_name
 			fi
 		fi
-		if [[ $1 = *m* ]]; then
+		if [[ $1 = *f* ]]; then
+			git merge --ff-only $thread_name
+		elif [[ $1 = *m* ]]; then
 			git merge $thread_name
 		fi
 		if [[ $1 = *d* ]]; then
 			git branch -d $thread_name
+		fi
+		if [[ $stashed = yes ]]; then
+			git stash pop
 		fi
 	}
 
@@ -237,11 +248,15 @@ elif [[ $_my_zprofile_shell == zsh ]]; then
 	}
 
 	function _wf_cmd_tdr {
-		_wf_impl_td rmd
+		_wf_impl_td rfd
 	}
 
 	function _wf_cmd_tdm {
 		_wf_impl_td md
+	}
+
+	function _wf_cmd_tdf {
+		_wf_impl_td fd
 	}
 
 	function wf {
